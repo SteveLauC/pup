@@ -1,8 +1,16 @@
 [package]
 name = "pup"
+description = "Upload images in markdown file to github pic repo and replace the local path with the returned URL"
 version = "0.1.0"
 edition = "2021"
+authors = ["SteveLauC <stevelauc@outlook.com>"]
+readme = "README.md"
+licence = "GPLv2"
+categories = ["command-line-utilities"]
+repository = "https://github.com/SteveLauC/pup"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+base64 = "0.13.0"
+clap = {version = "3.1.8", features = ["cargo"] }
+toml = "0.5.8"

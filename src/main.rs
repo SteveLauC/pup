@@ -1,3 +1,9 @@
+mod cli;
+use cli::cli_init;
+
+mod config;
+
+
 fn main() {
-    println!("Hello, world!");
+   cli_init(); 
 }
