@@ -11,34 +11,31 @@ use std::os::unix::fs::OpenOptionsExt;
 pub struct Person {
     pub name: String,
     pub email: String,
-    pub date: String,
 }
 
 /// arguments needed to send the http request
 #[derive(Debug)]
 pub struct Config {
-    pub accept: String,
+    pub accept: String,  // default: application/vnd.github.v3+json
     pub owner: String,
-    pub path: String,
+    pub path: String,    // aka. file name
     pub message: String,
-    pub content: String,
-    pub branch: String,
+    pub content: String, 
     pub commiter: Person,
     pub author: Person,
     pub token: String,
 }
 
+
 // configuration file template
 const TEMPLETE: &str = r#"
 # configuration file for pup
 [user]
+github-user-name = ""
+github-repo-name = ""
+mail = ""
 
-[request-configuration]
-accept = ""
-owner = ""
-path = ""
-message = ""
-branch = ""
+[authorization]
 token = ""
 "#;
 
