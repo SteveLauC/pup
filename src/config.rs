@@ -1,12 +1,12 @@
 //! everything relevant to configuration.
+use anyhow::Result;
 use std::env::var;
 use std::fs::{create_dir, File, OpenOptions};
 use std::io::{Read, Write};
 use std::os::unix::fs::OpenOptionsExt;
-use std::path::{PathBuf};
+use std::path::PathBuf;
 use std::process::exit;
 use toml::Value;
-
 
 // configuration file template
 const TEMPLETE: &str = r#"# configuration file for pup
@@ -24,42 +24,44 @@ const RELATIVE_CONFIG_FILE: &str = ".config/pup/config.toml";
 
 #[derive(Debug)]
 pub struct Config {
-    name: String,
-    repo: String,
-    mail: String,
-    token: String,
+    pub name: String,
+    pub repo: String,
+    pub mail: String,
+    pub token: String,
 }
 
 /// return HOME path
-fn home_path() -> String {
-    var("HOME").expect("HOME variable is not defined")
+fn home_path() -> Result<String> {
+    let home = var("HOME")?;
+
+    Ok(home)
 }
 
 /// return abslote config foler path
-fn config_folder_path() -> PathBuf {
+fn config_folder_path() -> Result<PathBuf> {
     let mut config_folder_path: PathBuf = PathBuf::new();
-    config_folder_path.push(home_path());
+    config_folder_path.push(home_path()?);
     config_folder_path.push(RELATIVE_CONFIG_FOLDER);
 
-    config_folder_path
+    Ok(config_folder_path)
 }
 
-/// return abslote config file path 
-fn config_file_path() -> PathBuf {
+/// return abslote config file path
+fn config_file_path() -> Result<PathBuf> {
     let mut config_file_path: PathBuf = PathBuf::new();
-    config_file_path.push(home_path());
+    config_file_path.push(home_path()?);
     config_file_path.push(RELATIVE_CONFIG_FILE);
 
-    config_file_path
+    Ok(config_file_path)
 }
 
 /// create configuration folder and file when they don't exist
 /// write configuration template to the cofig file when the file was just created
-pub fn create_config() {
-    let config_folder_path: PathBuf = config_folder_path();
-    let config_file_path: PathBuf = config_file_path();
+pub fn create_config() -> Result<()> {
+    let config_folder_path: PathBuf = config_folder_path()?;
+    let config_file_path: PathBuf = config_file_path()?;
     if !config_folder_path.exists() {
-        create_dir(config_folder_path).expect("can not create configuration folder");
+        create_dir(config_folder_path)?
     }
 
     if !config_file_path.exists() {
@@ -67,27 +69,24 @@ pub fn create_config() {
             .write(true)
             .create_new(true)
             .mode(0o600)
-            .open(config_file_path)
-            .expect("can not create configuration file");
-        f.write_all(TEMPLETE.as_bytes())
-            .expect("can not write configuration template to ~/.config/pup/config.toml");
+            .open(config_file_path)?;
+
+        f.write_all(TEMPLETE.as_bytes())?;
     }
+    Ok(())
 }
 
 /// check the configure file to see whether it is valid
 /// if not, print the erroneous config to stderr
-pub fn check_config() -> Option<Config> {
-    let config_path: PathBuf = config_file_path();
+pub fn check_config() -> Result<Config> {
+    let config_path: PathBuf = config_file_path()?;
 
-    let mut f: File = File::open(config_path).expect("can not open configuration file");
+    let mut f: File = File::open(config_path)?;
     let mut buf: String = String::with_capacity(200);
-    f.read_to_string(&mut buf)
-        .expect("can not read configuration file");
+    f.read_to_string(&mut buf)?;
 
     // parse the configuration file
-    let config: Value = buf
-        .parse::<Value>()
-        .expect("the configuration file is invalid");
+    let config: Value = buf.parse::<Value>()?;
 
     let name: &str = config["user"]["github-user-name"].as_str().unwrap();
     let repo: &str = config["user"]["github-repo-name"].as_str().unwrap();
@@ -115,11 +114,11 @@ pub fn check_config() -> Option<Config> {
         exit(1);
     }
 
-    Some(Config {
+    Ok(Config {
         name: name.into(),
         repo: repo.into(),
         mail: mail.into(),
-        token: token.into(),
+        token: format!("token {}", token),
     })
 }
 

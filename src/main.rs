@@ -5,14 +5,11 @@ mod config;
 use config::{check_config, create_config, Config};
 
 mod request;
+use request::request;
 
+use anyhow::Result;
 use std::path::PathBuf;
 
-fn main() {
-    let file_name: PathBuf = get_target_file(cli_init());
-    println!("{:?}", file_name);
-
-    create_config();
-    let config: Option<Config> = check_config();
-    println!("{:?}", config);
+fn main() -> Result<()> {
+    Ok(())
 }

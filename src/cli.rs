@@ -1,4 +1,4 @@
-use clap::{crate_authors, crate_description, crate_version, Arg, Command, ArgMatches};
+use clap::{crate_authors, crate_description, crate_version, Arg, ArgMatches, Command};
 use std::path::PathBuf;
 use std::process::exit;
 
@@ -20,6 +20,7 @@ pub fn cli_init() -> ArgMatches {
 /// get the target markdown file
 /// and make sure it is valid
 pub fn get_target_file(app: ArgMatches) -> PathBuf {
+    // we can guarantee `filename` is give, so just unwrap here.
     let filename: &str = app.value_of("filename").unwrap();
 
     let file_path = PathBuf::from(filename);
