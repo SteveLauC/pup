@@ -1,6 +1,6 @@
-use serde_json::{Value, from_str};
 use reqwest::blocking::Response;
 use reqwest::StatusCode;
+use serde_json::{from_str, Value};
 
 pub fn get_url(body: Response) -> Option<String> {
     match body.status() {
@@ -12,28 +12,21 @@ pub fn get_url(body: Response) -> Option<String> {
             } else {
                 None
             }
-        },
+        }
         StatusCode::NOT_FOUND => {
             // eprintln!("{:?}", body);
             eprintln!("GitHub api is invalid");
             None
-        },
+        }
         StatusCode::UNPROCESSABLE_ENTITY => {
             // eprintln!("{:?}", body);
             eprintln!("Token is invalid");
             None
-        },
+        }
         StatusCode::CONFLICT => {
             eprintln!("Seems the file you want upload already exists");
             None
         }
-        _ => {
-            None
-        },
+        _ => None,
     }
-}
-
-mod test{
-    use super::*;
-    
 }

@@ -1,11 +1,10 @@
-use super::config::Config;
+use super::config::Cfg;
 use anyhow::Result;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue};
-use reqwest::StatusCode;
 
 /// send request
-pub fn request(config: &Config, file_name: String, file_contents: String) -> Result<Response> {
+pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<Response> {
     // init a client
     let client: Client = Client::new();
 
@@ -23,7 +22,10 @@ pub fn request(config: &Config, file_name: String, file_contents: String) -> Res
     );
 
     // init the json body
-    let json_body: String = format!("{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"{}\"}}", config.name, config.mail, file_contents);
+    let mut json_body: Vec<u8>= format!("{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"", config.name, config.mail).as_bytes().to_vec();
+    json_body.extend_from_slice(&file_contents);
+    json_body.extend_from_slice("\"}".as_bytes());
+    println!("{:?}", json_body);
 
     let url: String = format!(
         "https://api.github.com/repos/{}/{}/contents/{}",

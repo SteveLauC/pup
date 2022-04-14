@@ -1,31 +1,20 @@
-#![allow(dead_code)]
-#![allow(unused_imports)]
-
 mod cli;
-use cli::{cli_init, get_target_file};
-
 mod config;
-use config::{check_config, create_config, Config};
-
-mod request;
-use request::request;
-
+mod manipulation;
 mod r#match;
-use r#match::MatchedLine;
-
+mod request;
 mod response;
 
-mod encode;
-
 use anyhow::Result;
+use cli::{cli_init, get_target_file};
+use config::{check_config, create_config, Cfg};
+use manipulation::manipulate;
 use std::path::PathBuf;
 
 fn main() -> Result<()> {
-
     create_config()?;
-    let config: Config = check_config()?;
-    
-    cli_init();
-    
+    let config: Cfg = check_config()?;
+    let target: PathBuf = get_target_file(cli_init());
+    manipulate(target.as_path(), &config)?;
     Ok(())
 }

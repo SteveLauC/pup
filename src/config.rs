@@ -23,7 +23,7 @@ const RELATIVE_CONFIG_FOLDER: &str = ".config/pup";
 const RELATIVE_CONFIG_FILE: &str = ".config/pup/config.toml";
 
 #[derive(Debug)]
-pub struct Config {
+pub struct Cfg {
     pub name: String,
     pub repo: String,
     pub mail: String,
@@ -78,7 +78,7 @@ pub fn create_config() -> Result<()> {
 
 /// check the configure file to see whether it is valid
 /// if not, print the erroneous config to stderr
-pub fn check_config() -> Result<Config> {
+pub fn check_config() -> Result<Cfg> {
     let config_path: PathBuf = config_file_path()?;
 
     let mut f: File = File::open(config_path)?;
@@ -114,7 +114,7 @@ pub fn check_config() -> Result<Config> {
         exit(1);
     }
 
-    Ok(Config {
+    Ok(Cfg {
         name: name.into(),
         repo: repo.into(),
         mail: mail.into(),
@@ -122,6 +122,7 @@ pub fn check_config() -> Result<Config> {
     })
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
 

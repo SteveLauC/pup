@@ -1,4 +1,3 @@
-use anyhow::Result;
 use regex::{Match, Regex};
 use std::ops::{Index, Range};
 
@@ -36,6 +35,7 @@ pub fn is_matched(line: &str) -> bool {
     re.is_match(line)
 }
 
+#[cfg(test)]
 mod test {
     use super::*;
     #[test]
