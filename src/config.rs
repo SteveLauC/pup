@@ -126,7 +126,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn template_parse() {
+    fn template_parse_test() {
         let tem: &str = r#"# configuration file for pup
 [user]
 github-user-name = "SteveLauC"

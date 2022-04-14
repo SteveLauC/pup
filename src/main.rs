@@ -11,7 +11,7 @@ mod request;
 use request::request;
 
 mod r#match;
-use r#match::replace;
+use r#match::MatchedLine;
 
 use anyhow::Result;
 use std::path::PathBuf;

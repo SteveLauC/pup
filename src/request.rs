@@ -3,6 +3,7 @@ use super::config::Config;
 use anyhow::Result;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue};
+use reqwest::StatusCode;
 
 /// send request
 pub fn request(config: &Config, file_name: String, file_contents: String) -> Result<Response> {
@@ -31,4 +32,9 @@ pub fn request(config: &Config, file_name: String, file_contents: String) -> Res
     );
     let res: Response = client.put(url).headers(header).body(json_body).send()?;
     Ok(res)
+}
+
+pub fn get_url(res: Response) -> Result<String> {
+    if res.status() != StatusCode::ACCEPTED {}
+    unimplemented!()
 }
