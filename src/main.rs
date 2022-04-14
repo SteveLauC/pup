@@ -15,6 +15,8 @@ use r#match::MatchedLine;
 
 mod response;
 
+mod encode;
+
 use anyhow::Result;
 use std::path::PathBuf;
 
@@ -23,9 +25,7 @@ fn main() -> Result<()> {
     create_config()?;
     let config: Config = check_config()?;
     
-    let res = request(&config, "randm.png".into(), "YWJjCg==".into())?;
+    cli_init();
     
-    println!("{}", res.status());
-    println!("{}", res.text()?);
     Ok(())
 }
