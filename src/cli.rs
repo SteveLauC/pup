@@ -1,8 +1,28 @@
+/*
+ * cli.rs: handle everything relevant to command line interface
+*/
+
 use clap::{crate_authors, crate_description, crate_version, Arg, ArgMatches, Command};
 use std::path::PathBuf;
 use std::process::exit;
 
-/// initialize the command line application
+/*
+ * type to represent the command line interface configuration
+*/
+pub struct CliCfg {
+    pub filename: PathBuf,
+    pub verbose: bool,
+}
+
+impl CliCfg {
+    fn new(filename: PathBuf, verbose: bool) -> Self {
+        CliCfg { filename, verbose }
+    }
+}
+
+/*
+ * purpose: initialize the command line application
+*/
 pub fn cli_init() -> ArgMatches {
     Command::new("pup")
         .author(crate_authors!(" "))
@@ -12,22 +32,33 @@ pub fn cli_init() -> ArgMatches {
             Arg::new("filename")
                 .takes_value(true)
                 .required(true)
-                .help("Speficy the target markdown file"),
+                .help("To speficy the target markdown file"),
+        )
+        .arg(
+            Arg::new("verbose")
+            .short('v')
+            .long("verbose")
+            .takes_value(false)
+            .help("Be verbose when outputing the uploading info, showing them as they are detected and uploaded")
         )
         .get_matches()
 }
 
-/// get the target markdown file
-/// and make sure it is valid
-pub fn get_target_file(app: ArgMatches) -> PathBuf {
-    // we can guarantee `filename` is give, so just unwrap here.
-    let filename: &str = app.value_of("filename").unwrap();
-
-    let file_path = PathBuf::from(filename);
-    if file_path.exists() {
-        file_path
+/*
+ * purpose: initialize a cli config struct
+ * note: we need to make sure `filenamb` exists 
+*/
+pub fn get_cli_config(app: ArgMatches) -> CliCfg {
+    // we can guarantee `filename` is given, so just unwrap here.
+    let file: PathBuf = PathBuf::from(app.value_of("filename").unwrap());
+    
+    if file.exists() {
+        CliCfg::new(
+            file,
+            app.is_present("verbose"),
+        )
     } else {
-        eprintln!("filename does not exist");
+        eprintln!("pup: {:?} does not exist", file); 
         exit(1);
     }
 }
