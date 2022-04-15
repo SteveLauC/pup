@@ -20,7 +20,7 @@ impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
     pub fn new(line: &'lifetime_of_line mut String) -> Self {
         // find if this line contains a markdonw image link `![](/)`
         let outer_re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
-        let outer_mth: Match = outer_re.find(&line).unwrap();
+        let outer_mth: Match = outer_re.find(line).unwrap();
 
         // then determine the range of the path
         let inner_re: Regex = Regex::new(r#"\(.*\)"#).unwrap();
