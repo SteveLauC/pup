@@ -13,9 +13,11 @@ use super::r#match::{is_matched, MatchedLine};
 
 pub fn manipulate(target: &Path, config: &Cfg) -> Result<()> {
     let md_file: BufReader<File> = BufReader::new(File::open(target)?);
-
     let mut lines: Vec<String> = md_file.lines().map(|item| item.unwrap()).collect();
+
     for line in lines.iter_mut() {
+        line.push('\n');
+
         if is_matched(line) {
             let mut mth: MatchedLine = MatchedLine::new(line);
             let image_path: &Path = Path::new(mth.line.index(mth.range.clone()));
@@ -34,17 +36,20 @@ pub fn manipulate(target: &Path, config: &Cfg) -> Result<()> {
 
                 let mut contents: Vec<u8> = Vec::new();
                 contents.resize(file_contents.len() * 4 / 3 + 4, 0);
-                encode_config_slice(file_contents, STANDARD, &mut contents);
-
+                let n_bytes: usize = encode_config_slice(file_contents, STANDARD, &mut contents);
+                contents.truncate(n_bytes);  // remove the trailing zeros
 
                 let res = request(config, file_name.to_str().unwrap(), contents)?;
-                println!("{:?}", res);
 
                 match get_url(res) {
                     Some(url) => {
                         mth.replace(url.as_str());
                     }
-                    None => continue,
+                    None => {
+                        
+
+                        continue;
+                    }
                 }
             }
         }
