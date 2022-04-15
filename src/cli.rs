@@ -1,5 +1,5 @@
 /*
- * cli.rs: handle everything relevant to command line interface
+ * cli.rs: handles everything relevant to command line interface
 */
 
 use clap::{crate_authors, crate_description, crate_version, Arg, ArgMatches, Command};

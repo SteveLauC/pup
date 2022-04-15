@@ -1,5 +1,5 @@
 /*
- * config.rs: Handle everything relevant to `$HOME/.config/pup/config.toml`, including:
+ * config.rs: Handles everything relevant to `$HOME/.config/pup/config.toml`, including:
  *             1. Initialize config file
  *             2. Check that every field of the configuration file is not empty
  *             3. Instantiate a valid `Cfg` struct

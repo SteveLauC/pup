@@ -1,39 +1,66 @@
+/*
+ * match.rs: offers `![](/)` match functionality
+*/
+
+
 use regex::{Match, Regex};
 use std::ops::{Index, Range};
 
-pub struct MatchedLine<'a> {
-    pub line: &'a mut String,
-    pub range: Range<usize>,
+/*
+ * type to represent a matched line
+*/
+pub struct MatchedLine<'lifetime_of_line> {
+    pub line: &'lifetime_of_line mut String,
+    pub range: Range<usize>, // the position of the path on a line
 }
 
-impl<'a> MatchedLine<'a> {
-    pub fn new(line: &'a mut String) -> Self {
+impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
+    
+    /*
+     * purpose: initialize a MatchedLine struct
+    */
+    pub fn new(line: &'lifetime_of_line mut String) -> Self {
+        // find if this line contains a markdonw image link `![](/)`
         let outer_re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
-        let inner_re: Regex = Regex::new(r#"\(.*\)"#).unwrap();
-        let line_clone: String = line.clone();
+        let outer_mth: Match = outer_re.find(&line).unwrap();
 
-        let outer_mth: Match = outer_re.find(&line_clone).unwrap();
-        let rela_str: &str = line_clone.index(outer_mth.range());
-        let inner_mth: Match = inner_re.find(rela_str).unwrap();
+        // then determine the range of the path
+        let inner_re: Regex = Regex::new(r#"\(.*\)"#).unwrap();
+        let inner_str: &str = line.index(outer_mth.range());
+        let inner_mth: Match = inner_re.find(inner_str).unwrap();
+        
+        // start and end point of the link range
+        let start: usize = inner_mth.start() + outer_mth.start() + 1;
+        let end: usize = inner_mth.end() + outer_mth.start() - 1;
 
         Self {
             line,
             range: Range {
-                start: inner_mth.start() + outer_mth.start() + 1,
-                end: inner_mth.end() + outer_mth.start() - 1,
+                start,
+                end,
             },
         }
     }
 
-    pub fn replace(&mut self, url: &str) {
+    /*
+     * purpose: replace the local path with the returned URL
+    */
+    pub fn replace(&'lifetime_of_line mut self, url: &str) {
         self.line.replace_range(self.range.clone(), url);
     }
 }
 
+/*
+ * purpose: check whether a line contains a markdown image link
+*/
 pub fn is_matched(line: &str) -> bool {
     let re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
     re.is_match(line)
 }
+
+
+
+
 
 #[cfg(test)]
 mod test {
