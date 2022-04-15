@@ -6,6 +6,7 @@ the GitHub repo and replace the local file path with the returned URL.
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
 token, make sure it has access to your picture repo.
 2. Then clone this repo and build from source
+> Or download the [prebuilt binary](https://github.com/SteveLauC/pup/releases/tag/v0.1.0), currently only available for macOS(arm64)
 
 ```shell
 $ git clone https://github.com/SteveLauC/pup.git
