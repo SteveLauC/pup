@@ -12,9 +12,9 @@ use manipulation::manipulate;
 use std::path::PathBuf;
 
 fn main() -> Result<()> {
-    create_config()?;
-    let config: Cfg = check_config()?;
-    let target: PathBuf = get_target_file(cli_init());
-    manipulate(target.as_path(), &config)?;
+    // create_config();
+    // let config: Cfg = check_config();
+    // let target: PathBuf = get_target_file(cli_init());
+    // manipulate(target.as_path(), &config)?;
     Ok(())
 }

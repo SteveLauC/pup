@@ -26,7 +26,6 @@ pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<
     json_body.extend_from_slice(&file_contents);
     json_body.extend_from_slice("\"}".as_bytes());
 
-
     let url: String = format!(
         "https://api.github.com/repos/{}/{}/contents/{}",
         config.name, config.repo, file_name

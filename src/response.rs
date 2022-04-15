@@ -12,17 +12,17 @@ pub fn get_url(body: Response) -> Option<String> {
 
             // DEBUG
             let val: Value = from_str(&body).ok()?;
-            
+
             // DEBUG
             // println!("{}", val);
             // DEBUG
-            
+
             if let Value::String(ref url) = val["content"]["html_url"] {
                 Some(url.clone())
             } else {
                 None
             }
-        },
+        }
         _ => None,
     }
 }
