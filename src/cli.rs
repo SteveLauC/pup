@@ -46,19 +46,16 @@ pub fn cli_init() -> ArgMatches {
 
 /*
  * purpose: initialize a cli config struct
- * note: we need to make sure `filenamb` exists 
+ * note: we need to make sure `filenamb` exists
 */
 pub fn get_cli_config(app: ArgMatches) -> CliCfg {
     // we can guarantee `filename` is given, so just unwrap here.
     let file: PathBuf = PathBuf::from(app.value_of("filename").unwrap());
-    
+
     if file.exists() {
-        CliCfg::new(
-            file,
-            app.is_present("verbose"),
-        )
+        CliCfg::new(file, app.is_present("verbose"))
     } else {
-        eprintln!("pup: {:?} does not exist", file); 
+        eprintln!("pup: {:?} does not exist", file);
         exit(1);
     }
 }

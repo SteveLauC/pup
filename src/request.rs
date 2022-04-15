@@ -1,12 +1,18 @@
+/*
+ * request.rs: sends HTTP PUT request
+*/
+
 use super::config::Cfg;
 use anyhow::Result;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue};
 
-/// send request
-// change return type to Result<Response>
+/*
+ * purpose: send PUT request to the GitHub server
+ * return: None if there is anything wrong with network connection or message initialization
+*/
 pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<Response> {
-    // init a client
+    // init the client
     let client: Client = Client::new();
 
     // init the header
@@ -22,10 +28,25 @@ pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<
     );
 
     // init the json body
-    let mut json_body: Vec<u8>= format!("{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"", config.name, config.mail).as_bytes().to_vec();
+    /*
+    {
+        "message": "upload",
+        "commiter": {
+            "name": "commiter-name",
+            "email": "commiter-email"
+        },
+        "content": "file-contents"
+    }
+    */
+    let mut json_body: Vec<u8>= format!(
+        "{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"", 
+        config.name,
+        config.mail
+    ).as_bytes().to_vec();
     json_body.extend_from_slice(&file_contents);
     json_body.extend_from_slice("\"}".as_bytes());
 
+    // target URL
     let url: String = format!(
         "https://api.github.com/repos/{}/{}/contents/{}",
         config.name, config.repo, file_name

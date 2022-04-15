@@ -2,7 +2,6 @@
  * match.rs: offers `![](/)` match functionality
 */
 
-
 use regex::{Match, Regex};
 use std::ops::{Index, Range};
 
@@ -15,10 +14,9 @@ pub struct MatchedLine<'lifetime_of_line> {
 }
 
 impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
-    
     /*
      * purpose: initialize a MatchedLine struct
-    */
+     */
     pub fn new(line: &'lifetime_of_line mut String) -> Self {
         // find if this line contains a markdonw image link `![](/)`
         let outer_re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
@@ -28,23 +26,20 @@ impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
         let inner_re: Regex = Regex::new(r#"\(.*\)"#).unwrap();
         let inner_str: &str = line.index(outer_mth.range());
         let inner_mth: Match = inner_re.find(inner_str).unwrap();
-        
+
         // start and end point of the link range
         let start: usize = inner_mth.start() + outer_mth.start() + 1;
         let end: usize = inner_mth.end() + outer_mth.start() - 1;
 
         Self {
             line,
-            range: Range {
-                start,
-                end,
-            },
+            range: Range { start, end },
         }
     }
 
     /*
      * purpose: replace the local path with the returned URL
-    */
+     */
     pub fn replace(&'lifetime_of_line mut self, url: &str) {
         self.line.replace_range(self.range.clone(), url);
     }
@@ -57,10 +52,6 @@ pub fn is_matched(line: &str) -> bool {
     let re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
     re.is_match(line)
 }
-
-
-
-
 
 #[cfg(test)]
 mod test {

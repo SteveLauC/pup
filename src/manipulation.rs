@@ -1,3 +1,7 @@
+/*
+ * manipulation.rs:
+*/
+
 use super::config::Cfg;
 use super::request::request;
 use super::response::get_url;
@@ -39,8 +43,11 @@ pub fn manipulate(target: &Path, config: &Cfg) -> Result<()> {
                 let n_bytes: usize = encode_config_slice(file_contents, STANDARD, &mut contents);
                 contents.truncate(n_bytes); // remove the trailing zeros
 
+                // TODO: deal with the network error
+                // request is not sent
                 let res = request(config, file_name.to_str().unwrap(), contents)?;
 
+                // TODO: deal with response cases
                 match get_url(res) {
                     Some(url) => {
                         mth.replace(url.as_str());
