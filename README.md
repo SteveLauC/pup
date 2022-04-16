@@ -5,7 +5,7 @@ the GitHub repo and replace the local file path with the returned URL.
 ### TO DO
 - [ ] Use system password management to store TOKEN
 - [ ] Support for Windows 
-- [ ] Multithreading file manipulation
+- [x] Multithreading file manipulation
 - [ ] Relative image path support
 
 ### Demo video
