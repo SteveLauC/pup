@@ -2,6 +2,9 @@
 A command line tool aiming to upload the local image used in your markdown file to
 the GitHub repo and replace the local file path with the returned URL.
 
+### demo video
+![demo](https://user-images.githubusercontent.com/96880612/163659253-738ea3c7-49f4-4c1b-9452-2704864ae9fc.gif)
+
 ### How to use
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
 token, make sure it has access to your picture repo.
