@@ -1,8 +1,13 @@
-### pup
+### Pup
 A command line tool aiming to upload the local image used in your markdown file to
 the GitHub repo and replace the local file path with the returned URL.
 
-### demo video
+### TO DO
+- [ ] Use system password management to store TOKEN
+- [ ] Support for Windows 
+- [ ] Multithreading file manipulation
+
+### Demo video
 ![demo](https://user-images.githubusercontent.com/96880612/163659253-738ea3c7-49f4-4c1b-9452-2704864ae9fc.gif)
 
 ### How to use
