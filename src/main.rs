@@ -5,6 +5,7 @@ mod manipulation;
 mod r#match;
 mod request;
 mod response;
+mod result;
 
 use cli::{cli_init, get_cli_config, CliCfg};
 use config::{check_config, create_config, Cfg};
