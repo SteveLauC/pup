@@ -17,6 +17,8 @@ use std::path::Path;
 // use anyhow::Result;
 use crate::result::res_handling;
 use reqwest::blocking::Response;
+// use std::thread::sleep;
+// use std::time::Duration;
 
 /*
  * purpose: call the functions from other modules to complete the task
@@ -29,6 +31,8 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
 
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
+        // Take a break to prevent the server from getting too busy and returning CONFLICT
+        // sleep(Duration::from_millis(300));
 
         if is_matched(line) {
             let mut mth: MatchedLine = MatchedLine::new(line);

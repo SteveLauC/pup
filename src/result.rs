@@ -19,7 +19,8 @@ pub fn line_manipulation_print(path: &Path, res: ColoredString) {
 }
 
 pub fn res_handling(res: Result<(), Box<dyn Error>>, image_path: &Path) {
-    if let Err(_msg) = res {
+    if let Err(msg) = res {
+        println!("{}", msg);
         line_manipulation_print(image_path, "Failed".red());
     } else {
         line_manipulation_print(image_path, "DONE".green());
