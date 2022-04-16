@@ -2,7 +2,7 @@
  * request.rs: sends HTTP PUT request
 */
 
-use super::config::Cfg;
+use crate::config::Cfg;
 use anyhow::Result;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue};
