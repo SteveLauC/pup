@@ -1,4 +1,4 @@
-### Pup  ![build](https://github.com/stevelauc/pup/actions/workflows/build.yml/badge.svg)
+### Pup  ![build](https://github.com/stevelauc/pup/actions/workflows/Rust/badge.svg)
 A command line tool aiming to upload the local image used in your markdown file to
 the GitHub repo and replace the local file path with the returned URL.
 
