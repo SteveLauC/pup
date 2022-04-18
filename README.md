@@ -3,7 +3,7 @@ A command line tool aiming to upload the local image used in your markdown file 
 the GitHub repo and replace the local file path with the returned URL.
 
 ### TO DO
-- [ ] Use system password management to store TOKEN
+- [x] Use system password management to store TOKEN
 - [ ] Support for Windows 
 - [x] Multithreading file manipulation
 - [ ] Relative image path support
@@ -15,21 +15,21 @@ the GitHub repo and replace the local file path with the returned URL.
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
 token, make sure it has access to your picture repo.
 2. Then clone this repo and build from source
-> Or download the [prebuilt binary](https://github.com/SteveLauC/pup/releases/tag/v0.1.0), currently only available for macOS(arm64)
+> There is a prebuilt version of pup under [prebuilt-binary](https://github.com/SteveLauC/pup/prebuilt-binary), you can download it directly instead of building from source.
 
 ```shell
 $ git clone https://github.com/SteveLauC/pup.git
 $ cd pup
 $ cargo build
 ```
-3. Move the compiled binary to the directory in your $PATH
+3. Move the compiled binary to the directory in your $PATH, for example:
 ```shell
-$ cp target/debug/pup your_dir
+$ cp target/debug/pup /usr/share/bin
 ```
 4. Double check you have pup installed
 ```shell
 $ which pup
-some_path_to_pup
+/usr/local/bin/pup
 ```
 5. init config file
 ```shell
@@ -37,7 +37,6 @@ $ pup
 name is unset.
 repo is unset.
 mail is unset.
-token is unset.
 ```
 6. On your first run, `pup` will create a configuration file under
 `$HOME/.config/pup` and complain about the incompleteness of the configuration
@@ -55,11 +54,15 @@ your own one.
 github-user-name = "SteveLauC"
 github-repo-name = "test-repo"
 mail = "stevelauc@outlook.com"
-
-[authorization]
-token = "your-secret-token"
 ```
-8. Time to enjoy
+8. Let's try it again!
+```shell
+$ pup
+Please enter the TOKEN: 
+```
+Ohhhh, since we haven't entered a token yet, pup asks us to do this.
+
+9. All configuration is done! Time to enjoy:)
 ```shell
 $ pup your-markdown-file.md
 ```

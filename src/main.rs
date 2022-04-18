@@ -17,6 +17,7 @@ fn main() {
     create_config();
     let config: Cfg = check_config();
     let cli_cfg: CliCfg = get_cli_config(cli_init());
+
     let res: Arc<Mutex<Res>> = Arc::new(Mutex::new(Res::default()));
     manipulate(cli_cfg, &config, res);
 }

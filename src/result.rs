@@ -32,7 +32,12 @@ impl Res {
     pub fn show_results(&self) {
         println!(
             "\npup: {} {}, {} {}(✓), {} {}(✗)",
-            self.total, "FOUND".bold(), self.done, "SUCCESSFUL".bold().green(), self.failed, "FAILED".bold().red()
+            self.total,
+            "FOUND".bold(),
+            self.done,
+            "SUCCESSFUL".bold().green(),
+            self.failed,
+            "FAILED".bold().red()
         );
     }
 }

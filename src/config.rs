@@ -4,9 +4,10 @@
 //!             3. Instantiate a valid `Cfg` struct
 
 use colored::Colorize;
+use keyring::Entry;
 use std::env::var;
 use std::fs::{create_dir, File, OpenOptions};
-use std::io::{Read, Write};
+use std::io::{stdin, stdout, Read, Write};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::PathBuf;
 use std::process::exit;
@@ -18,9 +19,6 @@ const TEMPLETE: &str = r#"# configuration file for pup
 github-user-name = ""
 github-repo-name = ""
 mail = ""
-
-[authorization]
-token = ""
 "#;
 
 /// constant relative path of config file and folder
@@ -97,6 +95,27 @@ pub fn create_config() {
     }
 }
 
+/// purpose: fetch token from system passwrod mangaement
+///          if it is not set yet, ask the user to input and then store it
+pub fn fetch_token() -> String {
+    let pup: Entry = Entry::new("pup", "pup");
+    let mut token: String = String::with_capacity(10);
+
+    if let Ok(token) = pup.get_password() {
+        token
+    } else {
+        print!("Please enter the TOKEN: ");
+        stdout().flush().unwrap();
+        stdin()
+            .read_line(&mut token)
+            .expect("can not read user token");
+        pup.set_password(token.as_str())
+            .expect("can not store token");
+        token.truncate(token.len() - 1);
+        token
+    }
+}
+
 /// purpose: check every fields of the config file to see if any of them is empty.
 ///          If so, warn user and exit the program.
 ///
@@ -125,9 +144,6 @@ pub fn check_config() -> Cfg {
                     let mail: &str = config["user"]["mail"]
                         .as_str()
                         .expect("config.toml: missing user/mail field");
-                    let token: &str = config["authorization"]["token"]
-                        .as_str()
-                        .expect("config.toml: missing authorization/token field");
 
                     // sign used to record whether there are empty fields
                     let mut field_empty_sign: bool = false;
@@ -144,19 +160,14 @@ pub fn check_config() -> Cfg {
                         eprintln!("{} is unset.", "mail".red());
                         field_empty_sign = true;
                     }
-                    if token.is_empty() {
-                        eprintln!("{} is unset.", "token".red());
-                        field_empty_sign = true;
-                    }
                     if field_empty_sign {
                         exit(1);
                     }
-
                     Cfg {
                         name: name.into(),
                         repo: repo.into(),
                         mail: mail.into(),
-                        token: format!("token {}", token),
+                        token: format!("token {}", fetch_token()),
                     }
                 }
                 Err(msg) => {
@@ -183,9 +194,6 @@ mod test {
 github-user-name = "SteveLauC"
 github-repo-name = "pic"
 mail = "stevelauc@outlook.com"
-
-[authorization]
-token = "secert_token"
 "#;
         let val: Value = tem.parse::<Value>().unwrap();
         assert_eq!(
@@ -196,10 +204,6 @@ token = "secert_token"
         assert_eq!(
             val["user"]["mail"].as_str().unwrap(),
             "stevelauc@outlook.com"
-        );
-        assert_eq!(
-            val["authorization"]["token"].as_str().unwrap(),
-            "secert_token"
         );
     }
 }
