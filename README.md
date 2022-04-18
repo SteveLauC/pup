@@ -9,40 +9,36 @@ the GitHub repo and replaces the paths with the returned URL.
 - [ ] Relative image path support
 
 ### Demo video
-![demo](https://user-images.githubusercontent.com/96880612/163778336-a2fda462-0af0-45fa-afb5-bbec48b438fa.gif)
+  ![demo](https://user-images.githubusercontent.com/96880612/163778336-a2fda462-0af0-45fa-afb5-bbec48b438fa.gif)
 
-### How to use
+### Getting started
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
    token, make sure it has access to your picture repo.
-2. Then clone this repo and build from source
-   > There is a prebuilt version of pup under [prebuilt-binary](https://github.com/SteveLauC/pup/tree/main/prebuilt-binary), you can download it directly instead of building from source.
+
+2. Execute the following script: 
 
    ```shell
-   $ git clone https://github.com/SteveLauC/pup.git
-   $ cd pup
-   $ cargo build
+   $ curl https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh && sudo sh install.sh
+   $ rm install.sh
    ```
-3. Move the compiled binary to the directory in your $PATH, for example:
 
-   ```shell
-   $ cp target/debug/pup /usr/share/bin
-   ```
-4. Double check you have pup installed
+3. Double check you have pup installed
    ```shell
    $ which pup
    /usr/local/bin/pup
    ```
-5. init config file
+4. init config file
    ```shell
    $ pup
    name is unset.
    repo is unset.
    mail is unset.
    ```
-6. On your first run, `pup` will create a configuration file under
+5. On your first run, `pup` will create a configuration file under
 `$HOME/.config/pup` and complain about the incompleteness of the configuration
 to you.
-7. Then edit it to make it complete.
+
+6. Then edit it to make it complete.
    ```shell
    $ vim $HOME/.config/pup/config.toml
    ```
@@ -56,18 +52,23 @@ to you.
    github-repo-name = "test-repo"
    mail = "stevelauc@outlook.com"
    ```
-8. Let's try it again!
+7. Let's try it again!
    ```shell
    $ pup
    Please enter the TOKEN: 
    ```
    Ohhhh, since we haven't entered a token yet, pup asks us to do this.
 
-9. All configuration is done! Time to enjoy:)
+8. All configuration is done! Time to enjoy:)
    ```shell
    $ pup your-markdown-file.md
    ```
+### Uninstallation
+   Execute the following script:
 
-
+   ```shell
+   $ curl https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh && sudo sh install.sh
+   $ rm uninstall.sh
+   ```
 ### How it works
 ![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.png)
