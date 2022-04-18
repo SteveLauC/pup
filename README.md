@@ -18,7 +18,7 @@ the GitHub repo and replaces the paths with the returned URL.
 2. Execute the following script: 
 
    ```shell
-   $ curl https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh && sudo sh install.sh
+   $ curl -o install.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh && sudo bash install.sh
    $ rm install.sh
    ```
 
@@ -67,7 +67,7 @@ to you.
    Execute the following script:
 
    ```shell
-   $ curl https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh && sudo sh install.sh
+   $ curl -o uninstall.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh && sudo bash install.sh
    $ rm uninstall.sh
    ```
 ### How it works
