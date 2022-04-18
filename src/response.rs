@@ -6,7 +6,6 @@ use serde_json::{from_str, Value};
 use std::error::Error;
 use std::fmt;
 
-
 /// type to represent failed cases
 #[derive(Debug)]
 pub enum FailedCases {
@@ -24,9 +23,8 @@ impl fmt::Display for FailedCases {
 }
 impl Error for FailedCases {}
 
-
 /// purpose: parse URL from the returned json body
-/// 
+///
 /// arguments:
 ///     * `body`: HTTP response
 ///     

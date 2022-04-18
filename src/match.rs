@@ -3,7 +3,6 @@
 use regex::{Match, Regex};
 use std::ops::{Index, Range};
 
-
 /// type to represent a matched line
 pub struct MatchedLine<'lifetime_of_line> {
     pub line: &'lifetime_of_line mut String,
@@ -35,19 +34,17 @@ impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
         }
     }
 
-    
     /// purpose: replace the local path with the returned URL
     ///
     /// arguments:
-    ///     * `url`: returned URL 
+    ///     * `url`: returned URL
     pub fn replace(&'lifetime_of_line mut self, url: &str) {
         self.line.replace_range(self.range.clone(), url);
     }
 }
 
-
 /// purpose: check whether a line contains a markdown image link
-/// 
+///
 /// arguments:
 ///     * `line`: a line in the markdown file
 pub fn is_matched(line: &str) -> bool {

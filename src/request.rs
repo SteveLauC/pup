@@ -6,7 +6,7 @@ use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue};
 
 /// purpose: send PUT request to the GitHub server
-/// 
+///
 /// arguments:
 ///     * `config`: user configuration
 ///     * `file_name`: name of the image file

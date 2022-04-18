@@ -7,14 +7,13 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-
 /// Error type of encoding process
 #[derive(Debug)]
 pub enum EncodeFailedCases {
     CanNotOpenFile,
     CanNotReadFile,
 }
-// impl Debug + Display for our own error type so that 
+// impl Debug + Display for our own error type so that
 // we can have std::error::Error implmented
 impl Display for EncodeFailedCases {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
@@ -23,14 +22,12 @@ impl Display for EncodeFailedCases {
 }
 impl Error for EncodeFailedCases {}
 
-
-
 /// purpose: to encode the image contents
-/// 
+///
 /// arguments:
 ///     * `path`: image path
 ///     
-/// return: If successful, return the encoded bytes. 
+/// return: If successful, return the encoded bytes.
 ///         Otherwise return the corressponding error type.
 pub fn encode(path: &Path) -> Result<Vec<u8>, EncodeFailedCases> {
     // buffer for the original file contents

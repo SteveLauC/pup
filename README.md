@@ -9,7 +9,7 @@ the GitHub repo and replace the local file path with the returned URL.
 - [ ] Relative image path support
 
 ### Demo video
-![demo](https://user-images.githubusercontent.com/96880612/163659253-738ea3c7-49f4-4c1b-9452-2704864ae9fc.gif)
+![demo](https://user-images.githubusercontent.com/96880612/163778336-a2fda462-0af0-45fa-afb5-bbec48b438fa.gif)
 
 ### How to use
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new

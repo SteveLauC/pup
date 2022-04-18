@@ -7,13 +7,14 @@ use crate::encode::encode;
 use crate::r#match::{is_matched, MatchedLine};
 use crate::request::request;
 use crate::response::get_url;
+use crate::result::Res;
 use rayon::prelude::*;
+use reqwest::blocking::Response;
 use std::fs::{File, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::ops::Index;
 use std::path::Path;
-use crate::result::res_handling;
-use reqwest::blocking::Response;
+use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -21,7 +22,7 @@ use std::time::Duration;
 /// arguments:
 ///     * `cli_cfg`: command-line interface configuration
 ///     * `config`: user configuration
-pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
+pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
     // buffer-wrapped target file
     let md_file: BufReader<File> =
         BufReader::new(File::open(cli_cfg.filename.as_path()).expect("can not open target file"));
@@ -36,10 +37,10 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
             let mut mth: MatchedLine = MatchedLine::new(line);
             // to escape simultaneous occurence of mutable and immutable borrowing
             let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
-            res_handling(
+            r.lock().unwrap().res_handling(
                 manipulate_mthed_line(&mut mth, config),
                 image_path.as_path(),
-            )
+            );
         }
     });
 
@@ -54,9 +55,10 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
         md_file
             .write(line.as_bytes())
             .expect("can not write to the target markdown file");
-    })
-}
+    });
 
+    r.lock().unwrap().show_results();
+}
 
 /// purpose: deal with every matched line
 /// arguments:

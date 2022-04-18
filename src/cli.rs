@@ -15,7 +15,6 @@ impl CliCfg {
     }
 }
 
-
 /// purpose: initialize the command line application
 pub fn cli_init() -> ArgMatches {
     Command::new("pup")
@@ -30,7 +29,6 @@ pub fn cli_init() -> ArgMatches {
         )
         .get_matches()
 }
-
 
 /// purpose: initialize a cli config struct
 ///

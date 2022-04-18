@@ -27,7 +27,6 @@ token = ""
 const RELATIVE_CONFIG_FOLDER: &str = ".config/pup";
 const RELATIVE_CONFIG_FILE: &str = ".config/pup/config.toml";
 
-
 /// type to represent the user configuration
 #[derive(Debug)]
 pub struct Cfg {
@@ -47,18 +46,15 @@ fn home_path() -> String {
     }
 }
 
-
 /// purpose: return absolute config folder path
 fn config_folder_path() -> PathBuf {
     PathBuf::from(format!("{}/{}", home_path(), RELATIVE_CONFIG_FOLDER))
 }
 
-
 /// purpose: return absolute config file path
 fn config_file_path() -> PathBuf {
     PathBuf::from(format!("{}/{}", home_path(), RELATIVE_CONFIG_FILE))
 }
-
 
 /// purpose: initialize configuration file
 /// action: if the config already exists, do nothing.
