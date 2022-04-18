@@ -16,8 +16,6 @@ use std::io::{BufRead, BufReader, Write};
 use std::ops::Index;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
-use std::thread::sleep;
-use std::time::Duration;
 
 /// purpose: call the functions from other modules to complete the task
 /// arguments:
@@ -31,8 +29,6 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
 
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
-        // Take a break to prevent the server from getting too busy and returning CONFLICT
-        sleep(Duration::from_millis(400));
 
         if is_matched(line) {
             let mut mth: MatchedLine = MatchedLine::new(line);

@@ -102,7 +102,6 @@ pub fn fetch_token() -> String {
     let mut token: String = String::with_capacity(10);
 
     if let Ok(token) = pup.get_password() {
-        // BUG: 
         token.trim().to_owned()
     } else {
         print!("Please enter the TOKEN: ");
@@ -110,9 +109,9 @@ pub fn fetch_token() -> String {
         stdin()
             .read_line(&mut token)
             .expect("can not read user token");
+        token.truncate(token.len() - 1); // remove the newline char
         pup.set_password(token.as_str())
             .expect("can not store token");
-        token.truncate(token.len() - 1);
         token
     }
 }
