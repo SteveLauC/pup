@@ -15,7 +15,7 @@ the GitHub repo and replace the local file path with the returned URL.
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
 token, make sure it has access to your picture repo.
 2. Then clone this repo and build from source
-> There is a prebuilt version of pup under [prebuilt-binary](https://github.com/SteveLauC/pup/prebuilt-binary), you can download it directly instead of building from source.
+> There is a prebuilt version of pup under [prebuilt-binary](https://github.com/SteveLauC/pup/tree/main/prebuilt-binary), you can download it directly instead of building from source.
 
 ```shell
 $ git clone https://github.com/SteveLauC/pup.git
