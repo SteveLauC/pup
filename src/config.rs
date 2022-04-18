@@ -102,7 +102,8 @@ pub fn fetch_token() -> String {
     let mut token: String = String::with_capacity(10);
 
     if let Ok(token) = pup.get_password() {
-        token
+        // BUG: 
+        token.trim().to_owned()
     } else {
         print!("Please enter the TOKEN: ");
         stdout().flush().unwrap();

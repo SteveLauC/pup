@@ -24,9 +24,10 @@ pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<
         "accept",
         HeaderValue::from_static("application/vnd.github.v3+json"),
     );
+
     header.append(
         "Authorization",
-        HeaderValue::from_str(config.token.as_str())?,
+        HeaderValue::from_bytes(config.token.as_bytes()).expect("failed to parse header value"),
     );
 
     // init the json body
@@ -53,6 +54,7 @@ pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<
         "https://api.github.com/repos/{}/{}/contents/{}",
         config.name, config.repo, file_name
     );
+
     let res: Response = client.put(url).headers(header).body(json_body).send()?;
     Ok(res)
 }

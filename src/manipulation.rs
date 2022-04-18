@@ -8,12 +8,13 @@ use crate::r#match::{is_matched, MatchedLine};
 use crate::request::request;
 use crate::response::get_url;
 use crate::result::Res;
+use crate::symlink::parse_symlink;
 use rayon::prelude::*;
 use reqwest::blocking::Response;
 use std::fs::{File, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::ops::Index;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use std::thread::sleep;
 use std::time::Duration;
@@ -61,6 +62,7 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
 }
 
 /// purpose: deal with every matched line
+///
 /// arguments:
 ///     * `mth`: matched line
 ///     * `config`: user configuration
@@ -68,10 +70,13 @@ fn manipulate_mthed_line<'a>(
     mth: &'a mut MatchedLine<'a>,
     config: &Cfg,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let image_path: &Path = Path::new(mth.line.index(mth.range.clone()));
+    let mut image_path: PathBuf = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
+    if image_path.is_symlink() {
+        image_path = parse_symlink(image_path.as_path());
+    }
     let image_name = image_path.file_name().expect("can not get image name");
 
-    let encoded_file_contents = encode(image_path)?;
+    let encoded_file_contents = encode(image_path.as_path())?;
     let res: Response = request(config, image_name.to_str().unwrap(), encoded_file_contents)?;
     let url: String = get_url(res)?;
     mth.replace(url.as_str());

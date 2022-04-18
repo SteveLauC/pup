@@ -20,7 +20,7 @@ impl Res {
     pub fn res_handling(&mut self, res: Result<(), Box<dyn Error>>, image_path: &Path) {
         self.total += 1;
         if let Err(msg) = res {
-            println!("find: {:?}\n[{}]: {}", image_path, "FAILED".red(), msg);
+            println!("find: {:?}\n[{}]: {:?}", image_path, "FAILED".red(), msg);
             self.failed += 1;
         } else {
             println!("find: {:?}\n[{}]", image_path, "DONE".green());
