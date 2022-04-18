@@ -1,6 +1,6 @@
 [package]
 name = "pup"
-description = "Upload images in markdown file to github pic repo and replace the local path with the returned URL"
+description = "A command-line tool that automatically uploads images from the markdown document to the GitHub repo and replaces the paths with the returned UR"
 version = "0.1.0"
 edition = "2021"
 authors = ["SteveLauC <stevelauc@outlook.com>"]
