@@ -5,14 +5,15 @@ elif [[ "$OSTYPE" == "darwin"* ]];then
 fi
 
 # delete the previous version first
-if ls /usr/local/bin|grep pup > /dev/null;then
+if ls /usr/local/bin|grep pup;then
     rm /usr/local/bin/pup
 fi
+
 mv pup /usr/local/bin
-chmod +x /usr/local/bin
+chmod +x /usr/local/bin/pup
 
 # Check if the installation is successful 
-if ls /usr/local/bin|grep pup > /dev/null;then
+if ls /usr/local/bin|grep pup;then
     echo "pup is installed"
 else
     echo "pup is not installed"

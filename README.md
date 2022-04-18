@@ -18,8 +18,8 @@ the GitHub repo and replaces the paths with the returned URL.
 2. Execute the following script: 
 
    ```shell
-   $ curl -o install.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh && sudo bash install.sh
-   $ rm install.sh
+   curl -o install.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh && sudo bash install.sh
+   rm install.sh
    ```
 
 3. Double check you have pup installed
@@ -67,8 +67,8 @@ to you.
    Execute the following script:
 
    ```shell
-   $ curl -o uninstall.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh && sudo bash install.sh
-   $ rm uninstall.sh
+   curl -o uninstall.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh && sudo bash install.sh
+   rm uninstall.sh
    ```
 ### How it works
 ![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.png)
