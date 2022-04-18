@@ -1,15 +1,13 @@
-/*
- * response.rs:
-*/
+//! response.rs: HTTP response handling
+
 use reqwest::blocking::Response;
 use reqwest::StatusCode;
 use serde_json::{from_str, Value};
 use std::error::Error;
 use std::fmt;
 
-/*
- * type to represent failed cases
-*/
+
+/// type to represent failed cases
 #[derive(Debug)]
 pub enum FailedCases {
     Conflict,
@@ -17,7 +15,8 @@ pub enum FailedCases {
     CreatedButUrlNotFound,
     NotCoveredCase,
 }
-
+// implement Display and Debug for our error type
+// so that we can have std::error::Error implmented
 impl fmt::Display for FailedCases {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
@@ -25,9 +24,14 @@ impl fmt::Display for FailedCases {
 }
 impl Error for FailedCases {}
 
-/*
- * purpose: parse URL from the returned json body
-*/
+
+/// purpose: parse URL from the returned json body
+/// 
+/// arguments:
+///     * `body`: HTTP response
+///     
+/// return: If successful, return `html_url` parsed from the response body.
+///         Otherwise return the corressponding error type
 pub fn get_url(body: Response) -> Result<String, FailedCases> {
     match body.status() {
         // returns 201

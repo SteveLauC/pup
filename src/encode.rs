@@ -1,6 +1,4 @@
-/*
- * encode.rs: encode file contents
-*/
+//! encode.rs: encode file contents
 
 use base64::{encode_config_slice, STANDARD};
 use std::error::Error;
@@ -9,25 +7,31 @@ use std::fs::File;
 use std::io::Read;
 use std::path::Path;
 
-/*
- * type to represent
-*/
+
+/// Error type of encoding process
 #[derive(Debug)]
 pub enum EncodeFailedCases {
     CanNotOpenFile,
     CanNotReadFile,
 }
-
+// impl Debug + Display for our own error type so that 
+// we can have std::error::Error implmented
 impl Display for EncodeFailedCases {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
     }
 }
-
 impl Error for EncodeFailedCases {}
-/*
- * purpose: to encode the file
-*/
+
+
+
+/// purpose: to encode the image contents
+/// 
+/// arguments:
+///     * `path`: image path
+///     
+/// return: If successful, return the encoded bytes. 
+///         Otherwise return the corressponding error type.
 pub fn encode(path: &Path) -> Result<Vec<u8>, EncodeFailedCases> {
     // buffer for the original file contents
     let mut orig_contents: Vec<u8> = Vec::new();

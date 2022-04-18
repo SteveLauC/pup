@@ -1,16 +1,18 @@
-/*
- * request.rs: sends HTTP PUT request
-*/
+//! request.rs: sends HTTP PUT request
 
 use crate::config::Cfg;
 use anyhow::Result;
 use reqwest::blocking::{Client, Response};
 use reqwest::header::{HeaderMap, HeaderValue};
 
-/*
- * purpose: send PUT request to the GitHub server
- * return: None if there is anything wrong with network connection or message initialization
-*/
+/// purpose: send PUT request to the GitHub server
+/// 
+/// arguments:
+///     * `config`: user configuration
+///     * `file_name`: name of the image file
+///     * `file_contents`: base64 encoded file contents
+///
+/// return: None if there is anything wrong with network connection or message initialization
 pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<Response> {
     // init the client
     let client: Client = Client::new();

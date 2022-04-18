@@ -1,22 +1,20 @@
-/*
- * match.rs: offers `![](/)` match functionality
-*/
+//! match.rs: offers `![](/)` match functionality
 
 use regex::{Match, Regex};
 use std::ops::{Index, Range};
 
-/*
- * type to represent a matched line
-*/
+
+/// type to represent a matched line
 pub struct MatchedLine<'lifetime_of_line> {
     pub line: &'lifetime_of_line mut String,
     pub range: Range<usize>, // the position of the path on a line
 }
 
 impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
-    /*
-     * purpose: initialize a MatchedLine struct
-     */
+    /// purpose: initialize a MatchedLine struct
+    ///
+    /// arguments:
+    ///     * `line`: reference to the matched line string
     pub fn new(line: &'lifetime_of_line mut String) -> Self {
         // find if this line contains a markdonw image link `![](/)`
         let outer_re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
@@ -37,17 +35,21 @@ impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
         }
     }
 
-    /*
-     * purpose: replace the local path with the returned URL
-     */
+    
+    /// purpose: replace the local path with the returned URL
+    ///
+    /// arguments:
+    ///     * `url`: returned URL 
     pub fn replace(&'lifetime_of_line mut self, url: &str) {
         self.line.replace_range(self.range.clone(), url);
     }
 }
 
-/*
- * purpose: check whether a line contains a markdown image link
-*/
+
+/// purpose: check whether a line contains a markdown image link
+/// 
+/// arguments:
+///     * `line`: a line in the markdown file
 pub fn is_matched(line: &str) -> bool {
     let re: Regex = Regex::new(r#"!\[.*\]\(/.*\)"#).unwrap();
     re.is_match(line)

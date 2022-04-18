@@ -1,7 +1,5 @@
-/*
- * manipulation.rs: Process the target markdown file, check line by line if there
- *                  is a markdown image link, send the request and replace the path
-*/
+//! manipulation.rs: Process the target markdown file, check line by line if there
+//!                 is a markdown image link, send the request and replace the path
 
 use crate::cli::CliCfg;
 use crate::config::Cfg;
@@ -14,15 +12,15 @@ use std::fs::{File, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::ops::Index;
 use std::path::Path;
-// use anyhow::Result;
 use crate::result::res_handling;
 use reqwest::blocking::Response;
-// use std::thread::sleep;
-// use std::time::Duration;
+use std::thread::sleep;
+use std::time::Duration;
 
-/*
- * purpose: call the functions from other modules to complete the task
-*/
+/// purpose: call the functions from other modules to complete the task
+/// arguments:
+///     * `cli_cfg`: command-line interface configuration
+///     * `config`: user configuration
 pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
     // buffer-wrapped target file
     let md_file: BufReader<File> =
@@ -32,14 +30,14 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
         // Take a break to prevent the server from getting too busy and returning CONFLICT
-        // sleep(Duration::from_millis(300));
+        sleep(Duration::from_millis(400));
 
         if is_matched(line) {
             let mut mth: MatchedLine = MatchedLine::new(line);
             // to escape simultaneous occurence of mutable and immutable borrowing
             let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
             res_handling(
-                manipulate_mthed_line(&mut mth, &cli_cfg, config),
+                manipulate_mthed_line(&mut mth, config),
                 image_path.as_path(),
             )
         }
@@ -59,12 +57,13 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg) {
     })
 }
 
-/*
- * purpose: deal with every matched line
-*/
+
+/// purpose: deal with every matched line
+/// arguments:
+///     * `mth`: matched line
+///     * `config`: user configuration
 fn manipulate_mthed_line<'a>(
     mth: &'a mut MatchedLine<'a>,
-    _cli_cfg: &CliCfg,
     config: &Cfg,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let image_path: &Path = Path::new(mth.line.index(mth.range.clone()));

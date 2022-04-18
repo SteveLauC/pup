@@ -1,9 +1,7 @@
-/*
- * config.rs: Handles everything relevant to `$HOME/.config/pup/config.toml`, including:
- *             1. Initialize config file
- *             2. Check that every field of the configuration file is not empty
- *             3. Instantiate a valid `Cfg` struct
-*/
+//! config.rs: Handles everything relevant to `$HOME/.config/pup/config.toml`, including:
+//!             1. Initialize config file
+//!             2. Check that every field of the configuration file is not empty
+//!             3. Instantiate a valid `Cfg` struct
 
 use colored::Colorize;
 use std::env::var;
@@ -14,7 +12,7 @@ use std::path::PathBuf;
 use std::process::exit;
 use toml::Value;
 
-// configuration file template
+/// configuration file template
 const TEMPLETE: &str = r#"# configuration file for pup
 [user]
 github-user-name = ""
@@ -25,10 +23,12 @@ mail = ""
 token = ""
 "#;
 
-// constant relative path of config file and folder
+/// constant relative path of config file and folder
 const RELATIVE_CONFIG_FOLDER: &str = ".config/pup";
 const RELATIVE_CONFIG_FILE: &str = ".config/pup/config.toml";
 
+
+/// type to represent the user configuration
 #[derive(Debug)]
 pub struct Cfg {
     pub name: String,
@@ -37,7 +37,7 @@ pub struct Cfg {
     pub token: String,
 }
 
-// return HOME path
+/// return HOME path
 fn home_path() -> String {
     if let Ok(home) = var("HOME") {
         home
@@ -47,25 +47,22 @@ fn home_path() -> String {
     }
 }
 
-/*
- * purpose: return absolute config folder path
-*/
+
+/// purpose: return absolute config folder path
 fn config_folder_path() -> PathBuf {
     PathBuf::from(format!("{}/{}", home_path(), RELATIVE_CONFIG_FOLDER))
 }
 
-/*
- * purpose: return absolute config file path
-*/
+
+/// purpose: return absolute config file path
 fn config_file_path() -> PathBuf {
     PathBuf::from(format!("{}/{}", home_path(), RELATIVE_CONFIG_FILE))
 }
 
-/*
-    purpose: initialize configuration file
-    action: if the config already exists, do nothing.
-            Otherwise, create and write TEMPLATE to it.
-*/
+
+/// purpose: initialize configuration file
+/// action: if the config already exists, do nothing.
+///        Otherwise, create and write TEMPLATE to it.
 pub fn create_config() {
     let config_folder_path: PathBuf = config_folder_path();
     let config_file_path: PathBuf = config_file_path();
@@ -104,12 +101,12 @@ pub fn create_config() {
     }
 }
 
-/*
- * purpose: check every fields of the config file to see if any of them is empty.
- *          If so, warn user and exit the program.
- * action:  read the file contents and parse it.
- * return:  A initialized `Cfg` struct.
-*/
+/// purpose: check every fields of the config file to see if any of them is empty.
+///          If so, warn user and exit the program.
+///
+/// action:  read the file contents and parse it.
+///
+/// return:  A initialized `Cfg` struct.
 pub fn check_config() -> Cfg {
     let config_path: PathBuf = config_file_path();
 
