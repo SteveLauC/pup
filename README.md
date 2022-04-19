@@ -17,7 +17,7 @@ the GitHub repo and replaces the paths with the returned URL.
 - [x] Relative image path support
 
 # Demo video
-  ![demo](https://user-images.githubusercontent.com/96880612/163778336-a2fda462-0af0-45fa-afb5-bbec48b438fa.gif)
+  ![demo](https://user-images.githubusercontent.com/96880612/163975456-fdebdee0-f68f-4227-8f11-b1c72cb4eaa3.gif)
 
 # Getting started
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
