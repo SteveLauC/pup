@@ -85,4 +85,4 @@ to you.
    sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
    ```
 # How it works
-![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.png)
+![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.jpeg)
