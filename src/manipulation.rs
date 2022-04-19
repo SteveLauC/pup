@@ -10,6 +10,7 @@ use crate::response::get_url;
 use crate::result::Res;
 use rayon::prelude::*;
 use reqwest::blocking::Response;
+use std::collections::HashMap;
 use std::fs::{File, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::ops::Index;
@@ -30,11 +31,10 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
         line.push('\n');
 
         if let Some(mut mth) = MatchedLine::new(line) {
-            // to escape simultaneous occurence of mutable and immutable borrowing
-            let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
+            let image_paths = mth.paths.clone();
             r.lock().unwrap().res_handling(
                 manipulate_mthed_line(&mut mth, config),
-                image_path.as_path(),
+                image_paths.iter().map(|item| item.as_path()).collect()
             );
         }
     });
@@ -55,23 +55,37 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
     r.lock().unwrap().show_results();
 }
 
-/// purpose: deal with every matched line
-///
-/// arguments:
-///     * `mth`: matched line
-///     * `config`: user configuration
+// return Vec<Result<(), Error>>
+// Ok() indicates success
+// Error return failure cause
 fn manipulate_mthed_line<'a>(
     mth: &'a mut MatchedLine<'a>,
     config: &Cfg,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let image_path: PathBuf = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
+) -> Vec<Result<String, Box<dyn std::error::Error>>> {
 
-    let image_name = image_path.file_name().expect("can not get image name");
+    let image_path_vec: Vec<PathBuf> = mth.range.iter().map(|range|{
+        Path::new(mth.line.index(range.clone())).to_path_buf()
+    }).collect();
+    
+    let res: Vec<Result<String, Box<dyn std::error::Error>>> = image_path_vec.iter().enumerate().map(|(_, image_path)|{
+        manipulate_path(image_path, config)     
+    }).collect();
+    
+    let urls: HashMap<usize, &str> = res.iter().enumerate().filter(|(_, item)|{
+        item.is_ok()
+    }).map(|(idx, res)|{
+        (idx, res.as_ref().unwrap().as_str())
+    }).collect();
 
-    let encoded_file_contents = encode(image_path.as_path())?;
+    mth.replace(urls);
+
+    res
+}
+
+fn manipulate_path(path: &Path, config: &Cfg) -> Result<String, Box<dyn std::error::Error>> {
+    let image_name = path.file_name().expect("can not get image name");
+    let encoded_file_contents = encode(path)?;
     let res: Response = request(config, image_name.to_str().unwrap(), encoded_file_contents)?;
     let url: String = get_url(res)?;
-    mth.replace(url.as_str());
-
-    Ok(())
+    Ok(url)
 }

@@ -2,7 +2,7 @@
 
 use colored::Colorize;
 use std::error::Error;
-use std::path::Path;
+use std::path::{PathBuf, Path};
 
 #[derive(Default)]
 pub struct Res {
@@ -17,14 +17,17 @@ impl Res {
     /// arguments:
     ///     * `res`: return value of `manipulate_mthed_line`
     ///     * `image`: image path
-    pub fn res_handling(&mut self, res: Result<(), Box<dyn Error>>, image_path: &Path) {
+    pub fn res_handling(&mut self, res: Vec<Result<String, Box<dyn Error>>>, image_paths: Vec<&Path>) {
         self.total += 1;
-        if let Err(msg) = res {
-            println!("find: {:?}\n[{}]: {:?}", image_path, "FAILED".red(), msg);
-            self.failed += 1;
-        } else {
-            println!("find: {:?}\n[{}]", image_path, "DONE".green());
-            self.done += 1;
+        assert_eq!(res.len(), image_paths.len());
+        for (idx, image) in image_paths.iter().enumerate() {
+            if let Err(msg) = &res[idx] {
+                println!("find: {:?}\n[{}]: {:?}", image, "FAILED".red(), msg);
+                self.failed += 1;
+            } else {
+                println!("find: {:?}\n[{}]", image, "DONE".green());
+                self.done += 1;
+            }
         }
     }
 
