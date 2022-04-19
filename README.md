@@ -1,25 +1,33 @@
-### Pup [![BUILD](https://github.com/stevelauc/pup/workflows/Rust/badge.svg)](https://github.com/stevelauc/pup/actions/workflows/build.yml)
+# Pup 
+[![BUILD](https://github.com/stevelauc/pup/workflows/Rust/badge.svg)](https://github.com/stevelauc/pup/actions/workflows/build.yml)
+
 A command-line tool that automatically uploads images from the markdown document to
 the GitHub repo and replaces the paths with the returned URL.
 
-### TO DO
+# Table of contents
+   * [TO DO](https://github.com/SteveLauC/pup#to-do)
+   * [Demo Video](https://github.com/SteveLauC/pup#demo-video)
+   * [Getting Started](https://github.com/SteveLauC/pup#getting-started)
+   * [Uninstallation](https://github.com/SteveLauC/pup#uninstallation)
+   * [How it works](https://github.com/SteveLauC/pup#how-it-works)
+
+# TO DO
 - [x] Use system password management to store TOKEN
 - [x] Multithreading file manipulation
 - [x] Support for symbolic link parsing
 - [ ] Relative image path support
 
-### Demo video
+# Demo video
   ![demo](https://user-images.githubusercontent.com/96880612/163778336-a2fda462-0af0-45fa-afb5-bbec48b438fa.gif)
 
-### Getting started
+# Getting started
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
    token, make sure it has access to your picture repo.
 
 2. Execute the following script: 
 
    ```shell
-   curl -o install.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh && sudo bash install.sh
-   rm install.sh
+   sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
    ```
 
 3. Double check you have pup installed
@@ -44,7 +52,6 @@ to you.
    ```
    Make it something like the following one, remeber to replace each field with your own one.
 
-   > Currently the token is stored in plain text, will fix it later!
    ```
    # configuration file for pup
    [user]
@@ -63,12 +70,11 @@ to you.
    ```shell
    $ pup your-markdown-file.md
    ```
-### Uninstallation
+# Uninstallation
    Execute the following script:
 
    ```shell
-   curl -o uninstall.sh https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh && sudo bash install.sh
-   rm uninstall.sh
+   sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
    ```
-### How it works
+# How it works
 ![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.png)
