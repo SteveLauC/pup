@@ -4,11 +4,10 @@
 use crate::cli::CliCfg;
 use crate::config::Cfg;
 use crate::encode::encode;
-use crate::r#match::{is_matched, MatchedLine};
+use crate::r#match::MatchedLine;
 use crate::request::request;
 use crate::response::get_url;
 use crate::result::Res;
-use crate::symlink::parse_symlink;
 use rayon::prelude::*;
 use reqwest::blocking::Response;
 use std::fs::{File, OpenOptions};
@@ -30,8 +29,7 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
 
-        if is_matched(line) {
-            let mut mth: MatchedLine = MatchedLine::new(line);
+        if let Some(mut mth) = MatchedLine::new(line) {
             // to escape simultaneous occurence of mutable and immutable borrowing
             let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
             r.lock().unwrap().res_handling(
@@ -66,10 +64,8 @@ fn manipulate_mthed_line<'a>(
     mth: &'a mut MatchedLine<'a>,
     config: &Cfg,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let mut image_path: PathBuf = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
-    if image_path.is_symlink() {
-        image_path = parse_symlink(image_path.as_path());
-    }
+    let image_path: PathBuf = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
+
     let image_name = image_path.file_name().expect("can not get image name");
 
     let encoded_file_contents = encode(image_path.as_path())?;

@@ -14,8 +14,7 @@ the GitHub repo and replaces the paths with the returned URL.
 # TO DO
 - [x] Use system password management to store TOKEN
 - [x] Multithreading file manipulation
-- [x] Support for symbolic link parsing
-- [ ] Relative image path support
+- [x] Relative image path support
 
 # Demo video
   ![demo](https://user-images.githubusercontent.com/96880612/163778336-a2fda462-0af0-45fa-afb5-bbec48b438fa.gif)
