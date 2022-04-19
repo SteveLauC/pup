@@ -8,6 +8,7 @@ the GitHub repo and replaces the paths with the returned URL.
    * [TO DO](https://github.com/SteveLauC/pup#to-do)
    * [Demo Video](https://github.com/SteveLauC/pup#demo-video)
    * [Getting Started](https://github.com/SteveLauC/pup#getting-started)
+   * [What pup can NOT do](https://github.com/SteveLauC/pup#what-pup-can-not-do)
    * [Uninstallation](https://github.com/SteveLauC/pup#uninstallation)
    * [How it works](https://github.com/SteveLauC/pup#how-it-works)
 
