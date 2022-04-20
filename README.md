@@ -6,6 +6,7 @@ the GitHub repo and replaces the paths with the returned URL.
 
 # Table of contents
    * [TO DO](https://github.com/SteveLauC/pup#to-do)
+   * [Supported platforms](https://github.com/SteveLauC/pup#supported-platforms)
    * [Demo Video](https://github.com/SteveLauC/pup#demo-video)
    * [Getting Started](https://github.com/SteveLauC/pup#getting-started)
    * [What pup can NOT do](https://github.com/SteveLauC/pup#what-pup-can-not-do)
