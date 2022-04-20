@@ -72,7 +72,7 @@ to you.
    ```
    
 # What pup can NOT do
-1. Put multi images in a single line is not supported.
+1. Puting multi images in a single line is not supported.
 2. The causes of failure may be confusing. For example, you may upload a photo 
    that has already been uploaded, perhaps you are expecting something like 
    `[FAILED]: DuplicateFile`, but pup will tell you `[FAILED]: ValidationFaile`.
