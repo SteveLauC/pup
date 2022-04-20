@@ -17,6 +17,16 @@ the GitHub repo and replaces the paths with the returned URL.
 - [x] Multithreading file manipulation
 - [x] Relative image path support
 
+# Supported platforms
+
+   |Platform  |Supported|
+   |----------|---------|
+   |Linux-amd64| Yes    |
+   |Linux-arm64| No     |
+   |macOS-amd64| Yes    |
+   |macOS-arm64| Yes    |
+
+
 # Demo video
   ![demo](https://user-images.githubusercontent.com/96880612/163975456-fdebdee0-f68f-4227-8f11-b1c72cb4eaa3.gif)
 
@@ -24,7 +34,7 @@ the GitHub repo and replaces the paths with the returned URL.
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
    token, make sure it has access to your picture repo.
 
-2. Execute the following script: 
+2. If your platform is [supported](https://github.com/SteveLauC/pup#supported-platforms), execute the following script: 
 
    ```shell
    sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"

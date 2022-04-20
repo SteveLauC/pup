@@ -1,20 +1,41 @@
+set -e
+
+# fetch the corresponding bianry
 if [[ "$OSTYPE" == "linux"* ]];then
-    curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-linux-amd64
+    if [ `uname -m` = "x86_64" ];then
+        echo "fetching pup for you..."
+        curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-linux-amd64
+    elif [ `uname -p` = "arm"* ];then
+        echo "Not supported yet";exit 1; 
+    else
+        echo "Not supported yet";exit 1; 
+    fi
 elif [[ "$OSTYPE" == "darwin"* ]];then
-    curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-arm64
+    if [ `uname -m` = "x86_64" ];then
+        echo "fetching pup for you..."
+        curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-amd64
+    elif [ `uname -m` = "arm" ];then
+        echo "fetching pup for you..."
+        curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-arm64
+    fi
+fi
+
+# if `/usr/local/bin` does not exist, create it
+if [ ! -d "/usr/local/bin" ];then
+    sudo mkdir /usr/local/bin
 fi
 
 # delete the previous version first
-if ls /usr/local/bin|grep pup;then
-    rm /usr/local/bin/pup
+if [ -f "/usr/local/bin/pup" ];then
+    sudo rm /usr/local/bin/pup
 fi
 
-mv pup /usr/local/bin
-chmod +x /usr/local/bin/pup
+sudo mv pup /usr/local/bin
+sudo chmod +x /usr/local/bin/pup
 
 # Check if the installation is successful 
-if ls /usr/local/bin|grep pup;then
-    echo "pup is installed"
+if [ -f "/usr/local/bin/pup" ];then
+    echo "pup is installed ✔"
 else
-    echo "pup is not installed"
+    echo "pup is NOT installed ✘"
 fi
