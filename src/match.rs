@@ -19,7 +19,7 @@ impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
         let image_path_re: Regex = Regex::new(r#"!\[.*\]\(.*\)"#).unwrap();
 
         if image_path_re.is_match(line) {
-            let image_path_match: Match = image_path_re.find(line).unwrap(); 
+            let image_path_match: Match = image_path_re.find(line).unwrap();
 
             // used to match the parenthesis
             let parenthesis_re: Regex = Regex::new(r#"\(.*\)"#).unwrap();

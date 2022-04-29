@@ -3,11 +3,11 @@
 //!             2. Check that every field of the configuration file is not empty
 //!             3. Instantiate a valid `Cfg` struct
 
+use crate::token::fetch_token;
 use colored::Colorize;
-use keyring::Entry;
 use std::env::var;
 use std::fs::{create_dir, File, OpenOptions};
-use std::io::{stdin, stdout, Read, Write};
+use std::io::{Read, Write};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::PathBuf;
 use std::process::exit;
@@ -92,27 +92,6 @@ pub fn create_config() {
                 exit(1);
             }
         }
-    }
-}
-
-/// purpose: fetch token from system passwrod mangaement
-///          if it is not set yet, ask the user to input and then store it
-pub fn fetch_token() -> String {
-    let pup: Entry = Entry::new("pup", "pup");
-    let mut token: String = String::with_capacity(10);
-
-    if let Ok(token) = pup.get_password() {
-        token.trim().to_owned()
-    } else {
-        print!("Please enter the TOKEN: ");
-        stdout().flush().unwrap();
-        stdin()
-            .read_line(&mut token)
-            .expect("can not read user token");
-        token.truncate(token.len() - 1); // remove the newline char
-        pup.set_password(token.as_str())
-            .expect("can not store token");
-        token
     }
 }
 

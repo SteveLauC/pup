@@ -73,10 +73,16 @@ to you.
 7. Let's try it again!
    ```shell
    $ pup
-   Please enter the TOKEN: 
+   No TOKEN available.
+   Use `pup --update-token` to set it
    ```
    Ohhhh, since we haven't entered a token yet, pup asks us to do this.
 
+8. Set the token: enter the token and press enter to confirm.
+   ```shell
+   $ pup --update-token
+   Please input the new TOKEN:  
+   ```
 8. All configuration is done! Time to enjoy:)
    ```shell
    $ pup your-markdown-file.md
