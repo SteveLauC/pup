@@ -106,6 +106,7 @@ to you.
 # Uninstallation
 
    If you have set TOKEN in pup, use `pup --delete-token` to delete it first.
+
    Then, execute the following script:
 
    ```shell
