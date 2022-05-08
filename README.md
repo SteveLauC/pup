@@ -40,6 +40,14 @@ the GitHub repo and replaces the paths with the returned URL.
    ```shell
    sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
    ```
+   If you are in a place where you need proxy to access GitHub(i.e. China Mainland)
+   , and you have `https_proxy` set in your personal configuration, use the following 
+   script:
+
+   ```shell
+   sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
+   ```
+   
 
 3. Double check you have pup installed
    ```shell
@@ -96,10 +104,21 @@ to you.
    
 
 # Uninstallation
-   Execute the following script:
+
+   If you have set TOKEN in pup, use `pup --delete-token` to delete it first.
+   Then, execute the following script:
 
    ```shell
    sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
    ```
+   
+   If you are in a place where you need proxy to access GitHub(i.e. China Mainland)
+   , and you have `https_proxy` set in your personal configuration, use the following 
+   script:
+
+   ```shell
+   sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
+   ```
+
 # How it works
 ![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.jpeg)

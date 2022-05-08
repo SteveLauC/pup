@@ -1,6 +1,5 @@
 set -e
 
-pup --delete-token;
 if [ -f "/usr/local/bin/pup" ];then
     echo "deleting binary..."
     sudo rm /usr/local/bin/pup

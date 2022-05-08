@@ -44,7 +44,8 @@ pub fn update_token() -> Result<()> {
 /// action: delete the TOKEN if there was one
 ///
 /// return: when there is a TOKEN, `Ok(())` on success, `keyring::error::Error`
-///         on error. Exit the whole program if no TOKEN available
+///         on error. 
+///         Exit the whole program if no TOKEN available
 pub fn delete_token() -> Result<()> {
     let pup: Entry = Entry::new("pup", "pup");
     if pup.get_password().is_ok() {
