@@ -7,6 +7,7 @@ mod request;
 mod response;
 mod result;
 mod token;
+mod echo;
 
 use cli::{cli_init, get_cli_config};
 use config::{check_config, create_config, Cfg};
