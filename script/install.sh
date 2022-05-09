@@ -14,7 +14,7 @@ elif [[ "$OSTYPE" == "darwin"* ]];then
     if [ `uname -m` = "x86_64" ];then
         echo "fetching pup for you..."
         curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-amd64
-    elif [ `uname -m` = "arm" ];then
+    elif [ `uname -m` = "arm64" ];then
         echo "fetching pup for you..."
         curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-arm64
     fi
