@@ -84,6 +84,7 @@ the GitHub repo and replaces the paths with the returned URL.
 6. Then edit it to make it complete.
 
    ```shell
+   # vim $XDG_CONFIG_HOME/pup/config.toml if you have $XDG_CONFIG_HOME set
    $ vim $HOME/.config/pup/config.toml
    ```
    Make it something like the following one, remeber to replace each field with your own one.
