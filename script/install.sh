@@ -11,13 +11,8 @@ if [[ "$OSTYPE" == "linux"* ]];then
         echo "Not supported yet";exit 1; 
     fi
 elif [[ "$OSTYPE" == "darwin"* ]];then
-    if [ `uname -m` = "x86_64" ];then
-        echo "fetching pup for you..."
-        curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-amd64
-    elif [ `uname -m` = "arm64" ];then
-        echo "fetching pup for you..."
-        curl -o pup https://raw.githubusercontent.com/stevelauc/pup/main/prebuilt-binary/pup-macos-arm64
-    fi
+    echo "You need to build it from source";
+    exit 1;
 fi
 
 # if `/usr/local/bin` does not exist, create it

@@ -20,12 +20,12 @@ the GitHub repo and replaces the paths with the returned URL.
 
 # Supported platforms
 
-   |Platform  |Supported|
-   |----------|---------|
-   |Linux-amd64| Yes    |
-   |Linux-arm64| No     |
-   |macOS-amd64| Yes    |
-   |macOS-arm64| Yes    |
+   |Platform   |Supported                       |
+   |-----------|--------------------------------|
+   |Linux-amd64| Yes(prebuilt-binary-available) |
+   |Linux-arm64| No                             |
+   |macOS-amd64| Yes(need to build from src)    |
+   |macOS-arm64| Yes(need to build from src)    |
 
 
 # Demo video
@@ -35,37 +35,54 @@ the GitHub repo and replaces the paths with the returned URL.
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
    token, make sure it has access to your picture repo.
 
-2. If your platform is [supported](https://github.com/SteveLauC/pup#supported-platforms), execute the following script: 
+2. get the `pup` binary
 
-   ```shell
-   sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
-   ```
-   If you are in a place where you need proxy to access GitHub(i.e. China Mainland)
-   , and you have `https_proxy` set in your personal configuration, use the following 
-   script:
+   * Linux(amd64)
 
-   ```shell
-   sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
-   ```
-   
+       execute the following script: 
+
+        ```shell
+       sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
+       ```
+       If you are in a place where you need proxy to access GitHub(i.e. China Mainland)
+       , and you have `https_proxy` set in your personal configuration, use the following 
+       script:
+
+       ```shell
+       sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
+       ```
+
+    * macOS(Apple Silicon and Intel Mac):
+        You need to build it from source
+
+        ```shell
+        $ git clone https://github.com/SteveLauC/pup.git && cd pup
+        $ cargo build --release
+        $ sudo cp target/release/pup /usr/local/bin
+        ```
 
 3. Double check you have pup installed
+
    ```shell
    $ which pup
    /usr/local/bin/pup
    ```
 4. init config file
+
    ```shell
    $ pup
    name is unset.
    repo is unset.
    mail is unset.
    ```
-5. On your first run, `pup` will create a configuration file under
-`$HOME/.config/pup` and complain about the incompleteness of the configuration
-to you.
+
+5. On your first run, `pup` will create a configuration file and complain about 
+   the incompleteness of it to you. If you have `$XDG_CONFIG_HOME` validly set, 
+   then it is located in `$XDG_CONFIG_HOME/pup`; Otherwise, it is under 
+   `$HOME/.config/pup`
 
 6. Then edit it to make it complete.
+
    ```shell
    $ vim $HOME/.config/pup/config.toml
    ```

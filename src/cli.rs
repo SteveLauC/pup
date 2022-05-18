@@ -79,17 +79,17 @@ pub fn token_opt(app: &ArgMatches) {
 
 /// purpose: initialize a cli config struct if pup is executed like `pup target-file`
 ///
-/// action: 
-///     `$ pup --delete-token` or `$ pup --update-token`: 
-///         call `delete_token()` or `update_token()` if the corresponding option 
+/// action:
+///     `$ pup --delete-token` or `$ pup --update-token`:
+///         call `delete_token()` or `update_token()` if the corresponding option
 ///         is given, then exit the program.
 ///      `$ pup filename`:
 ///         if filename exists, return Some(CliCfg), otherwise warn the user and exit the program
 ///      `pup`:
-///         return None 
+///         return None
 /// arguments:
 ///     * `app`: return value of `cli_init`
-/// 
+///
 /// return: optional CliCfg
 ///
 /// note: we need to make sure `filename` exists

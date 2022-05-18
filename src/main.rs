@@ -1,5 +1,6 @@
 mod cli;
 mod config;
+mod echo;
 mod encode;
 mod manipulation;
 mod r#match;
@@ -7,7 +8,6 @@ mod request;
 mod response;
 mod result;
 mod token;
-mod echo;
 
 use cli::{cli_init, get_cli_config};
 use config::{check_config, create_config, Cfg};

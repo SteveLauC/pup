@@ -1,7 +1,7 @@
 //! token.rs: offers functionality of fetching, updating and deleting your secret TOKEN
 
-use keyring::{Entry, Result};
 use crate::echo::{echo_off, echo_on};
+use keyring::{Entry, Result};
 use std::{
     io::{stdin, stdout, Write},
     process::exit,
@@ -32,12 +32,12 @@ pub fn update_token() -> Result<()> {
     let pup: Entry = Entry::new("pup", "pup");
     print!("Please input the new TOKEN: ");
     stdout().flush().unwrap();
-    echo_off();  // disable echo
+    echo_off(); // disable echo
     let mut new_token: String = String::with_capacity(20);
     stdin()
         .read_line(&mut new_token)
         .expect("expect a new token");
-    echo_on();   // enable echo
+    echo_on(); // enable echo
     pup.set_password(new_token.as_str())
 }
 
@@ -46,7 +46,7 @@ pub fn update_token() -> Result<()> {
 /// action: delete the TOKEN if there was one
 ///
 /// return: when there is a TOKEN, `Ok(())` on success, `keyring::error::Error`
-///         on error. 
+///         on error.
 ///         Exit the whole program if no TOKEN available
 pub fn delete_token() -> Result<()> {
     let pup: Entry = Entry::new("pup", "pup");

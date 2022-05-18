@@ -1,7 +1,10 @@
-//! config.rs: Handles everything relevant to `$HOME/.config/pup/config.toml`, including:
+//! config.rs: Handles everything relevant to configuration file, including:
 //!             1. Initialize config file
 //!             2. Check that every field of the configuration file is not empty
 //!             3. Instantiate a valid `Cfg` struct
+//!
+//! configuration file location: if you have $XDG_CONFIG_HOME validly set, then
+//! it is located in $XDG_CONFIG_HOME/pup; Otherwise, it is under `$HOME/.config/pup`
 
 use crate::token::fetch_token;
 use colored::Colorize;
@@ -22,8 +25,7 @@ mail = ""
 "#;
 
 /// constant relative path of config file and folder
-const RELATIVE_CONFIG_FOLDER: &str = ".config/pup";
-const RELATIVE_CONFIG_FILE: &str = ".config/pup/config.toml";
+const RELATIVE_CONFIG_FOLDER: &str = "pup";
 
 /// type to represent the user configuration
 #[derive(Debug)]
@@ -34,27 +36,69 @@ pub struct Cfg {
     pub token: String,
 }
 
-/// return HOME path
+/// purpose: return $XDG_CONFIG_HOME
+///
+/// action: read $XDG_CONFIG_HOME, if it is set and not empty, return it
+///
+/// return: if $XDG_CONFIG_HOME is set and not empty, return Some($XDG_CONFIG_HOME)
+///         otherwise, return None
+fn xdg_config_home() -> Option<String> {
+    if let Ok(config_home) = var("XDG_CONFIG_HOME") {
+        if config_home.is_empty() {
+            return Some(config_home);
+        } else {
+            return None;
+        }
+    }
+    None
+}
+
+/// purpose: return home directory
+///
+/// action: read $HOME, if it is set, return it
+///
+/// return: if $HOME is set and not empty, return $HOME
+///         otherwise, warn user and exit the program
 fn home_path() -> String {
     if let Ok(home) = var("HOME") {
         home
     } else {
-        eprintln!("{} variable is unset.", "HOME".bold().red());
+        eprintln!("{} environment variable is unset.", "HOME".bold().red());
         exit(1);
     }
 }
 
 /// purpose: return absolute config folder path
+///
+/// action: if $XDG_CONFIG_HONE is set and not empty, return `$XDG_CONFIG_HOME/pup`
+///         otherwise, return `$HOME/.config/pup`
+///
+/// return: `$XDG_CONFIG_HOME/pup` or `$HOME/.config/pup`
 fn config_folder_path() -> PathBuf {
-    PathBuf::from(format!("{}/{}", home_path(), RELATIVE_CONFIG_FOLDER))
+    if let Some(xdg_config) = xdg_config_home() {
+        PathBuf::from(format!("{}/{}", xdg_config, RELATIVE_CONFIG_FOLDER))
+    } else {
+        PathBuf::from(format!(
+            "{}/.config/{}",
+            home_path(),
+            RELATIVE_CONFIG_FOLDER
+        ))
+    }
 }
 
 /// purpose: return absolute config file path
+///
+/// action: concatenate `config_folder_path()` and `config.toml`, then return
+///
+/// return: `config_folder_path()` + `config.toml`
 fn config_file_path() -> PathBuf {
-    PathBuf::from(format!("{}/{}", home_path(), RELATIVE_CONFIG_FILE))
+    let mut config_folder: PathBuf = config_folder_path();
+    config_folder.push("config.toml");
+    config_folder
 }
 
 /// purpose: initialize configuration file
+///
 /// action: if the config already exists, do nothing.
 ///        Otherwise, create and write TEMPLATE to it.
 pub fn create_config() {
@@ -184,5 +228,31 @@ mail = "stevelauc@outlook.com"
             val["user"]["mail"].as_str().unwrap(),
             "stevelauc@outlook.com"
         );
+    }
+
+    #[test]
+    fn config_folder_file_relation_path() {
+        let config_folder_path: PathBuf = config_folder_path();
+        let mut config_file_path: PathBuf = config_file_path();
+        config_file_path.pop();
+
+        assert_eq!(config_folder_path, config_file_path);
+    }
+
+    #[test]
+    fn config_folder_test() {
+        if let Ok(xdg_config) = var("XDG_CONFIG_HOME") {
+            if !xdg_config.is_empty() {
+                assert_eq!(
+                    PathBuf::from(format!("{}/pup", xdg_config)),
+                    config_folder_path()
+                );
+            } else {
+                assert_eq!(
+                    PathBuf::from(format!("{}/.config/pup", home_path())),
+                    config_folder_path()
+                );
+            }
+        }
     }
 }
