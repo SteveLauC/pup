@@ -44,7 +44,7 @@ the GitHub repo and replaces the paths with the returned URL.
         ```shell
        sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
        ```
-       If you are in a place where you need proxy to access GitHub(i.e. China Mainland)
+       If you are in a place where you need proxy to access GitHub(e.g. China Mainland)
        , and you have `https_proxy` set in your personal configuration, use the following 
        script:
 
@@ -131,7 +131,7 @@ the GitHub repo and replaces the paths with the returned URL.
    sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
    ```
    
-   If you are in a place where you need proxy to access GitHub(i.e. China Mainland)
+   If you are in a place where you need proxy to access GitHub(e.g. China Mainland)
    , and you have `https_proxy` set in your personal configuration, use the following 
    script:
 
