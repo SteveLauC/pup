@@ -22,7 +22,7 @@ the GitHub repo and replaces the paths with the returned URL.
 
    |Platform   |Supported                       |
    |-----------|--------------------------------|
-   |Linux-amd64| Yes(prebuilt-binary-available) |
+   |Linux-amd64| Yes(prebuilt-binary available) |
    |Linux-arm64| No                             |
    |macOS-amd64| Yes(need to build from src)    |
    |macOS-arm64| Yes(need to build from src)    |
