@@ -5,28 +5,25 @@ A command-line tool that automatically uploads images from the markdown document
 the GitHub repo and replaces the paths with the returned URL.
 
 # Table of contents
-   * [TO DO](https://github.com/SteveLauC/pup#to-do)
-   * [Supported platforms](https://github.com/SteveLauC/pup#supported-platforms)
-   * [Demo Video](https://github.com/SteveLauC/pup#demo-video)
-   * [Getting Started](https://github.com/SteveLauC/pup#getting-started)
-   * [What pup can NOT do](https://github.com/SteveLauC/pup#what-pup-can-not-do)
-   * [Uninstallation](https://github.com/SteveLauC/pup#uninstallation)
-   * [How it works](https://github.com/SteveLauC/pup#how-it-works)
+  * [TO DO](https://github.com/SteveLauC/pup#to-do)
+  * [Supported platforms](https://github.com/SteveLauC/pup#supported-platforms)
+  * [Demo Video](https://github.com/SteveLauC/pup#demo-video)
+  * [Getting Started](https://github.com/SteveLauC/pup#getting-started)
+  * [What pup can NOT do](https://github.com/SteveLauC/pup#what-pup-can-not-do)
+  * [Uninstallation](https://github.com/SteveLauC/pup#uninstallation)
+  * [How it works](https://github.com/SteveLauC/pup#how-it-works)
 
 # TO DO
+
 - [x] Use system password management to store TOKEN
 - [x] Multithreading file manipulation
 - [x] Relative image path support
 
 # Supported platforms
 
-   |Platform   |Supported                       |
-   |-----------|--------------------------------|
-   |Linux-amd64| Yes(prebuilt-binary available) |
-   |Linux-arm64| No                             |
-   |macOS-amd64| Yes(need to build from src)    |
-   |macOS-arm64| Yes(need to build from src)    |
+  * Linux
 
+  * macOS
 
 # Demo video
   ![demo](https://user-images.githubusercontent.com/96880612/163975456-fdebdee0-f68f-4227-8f11-b1c72cb4eaa3.gif)
@@ -37,35 +34,15 @@ the GitHub repo and replaces the paths with the returned URL.
 
 2. get the `pup` binary
 
-   * Linux(amd64)
-
-       execute the following script: 
-
-        ```shell
-       sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
-       ```
-       If you are in a place where you need proxy to access GitHub(e.g. China Mainland)
-       , and you have `https_proxy` set in your personal configuration, use the following 
-       script:
-
-       ```shell
-       sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/install.sh)"
-       ```
-
-    * macOS(Apple Silicon and Intel Mac):
-        You need to build it from source
-
-        ```shell
-        $ git clone https://github.com/SteveLauC/pup.git && cd pup
-        $ cargo build --release
-        $ sudo cp target/release/pup /usr/local/bin
-        ```
+   ```shell
+   $ cargo install --git https://github.com/SteveLauC/pup
+   ```
 
 3. Double check you have pup installed
 
    ```shell
    $ which pup
-   /usr/local/bin/pup
+   /home/$USER/.cargo/bin/pup
    ```
 4. init config file
 
@@ -115,6 +92,7 @@ the GitHub repo and replaces the paths with the returned URL.
    ```
    
 # What pup can NOT do
+
 1. Puting multi images in a single line is not supported.
 2. The causes of failure may be confusing. For example, you may upload a photo 
    that has already been uploaded, perhaps you are expecting something like 
@@ -123,21 +101,13 @@ the GitHub repo and replaces the paths with the returned URL.
 
 # Uninstallation
 
-   If you have set TOKEN in pup, use `pup --delete-token` to delete it first.
+  If you have set TOKEN in pup, use `pup --delete-token` to delete it first.
 
-   Then, execute the following script:
-
-   ```shell
-   sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
-   ```
-   
-   If you are in a place where you need proxy to access GitHub(e.g. China Mainland)
-   , and you have `https_proxy` set in your personal configuration, use the following 
-   script:
-
-   ```shell
-   sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/stevelauc/pup/main/script/uninstall.sh)"
-   ```
+  Then:
+ 
+  ```shell
+  $ cargo uninstall pup
+  ```
 
 # How it works
 ![workflow](https://github.com/SteveLauC/pic/blob/main/Page%201.jpeg)
