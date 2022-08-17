@@ -8,6 +8,7 @@ readme = "README.md"
 licence = "GPLv2"
 categories = ["command-line-utilities"]
 repository = "https://github.com/SteveLauC/pup"
+keywords = ["command-line-tool", "markdown", "pic-uploader", "cli"]
 
 
 [dependencies]
