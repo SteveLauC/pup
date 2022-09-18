@@ -6,7 +6,10 @@ use crate::{
     response::get_url, result::Res,
 };
 use rayon::prelude::*;
-use reqwest::blocking::{Client, Response};
+use reqwest::{
+    blocking::{Client, Response},
+    header::{HeaderMap, HeaderValue},
+};
 use std::{
     fs::{File, OpenOptions},
     io::{BufRead, BufReader, Write},
@@ -27,6 +30,17 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
 
     // init the client
     let http_client = Client::new();
+    // init the header
+    let mut headers: HeaderMap = HeaderMap::new();
+    headers.append("User-Agent", HeaderValue::from_static("pup"));
+    headers.append(
+        "accept",
+        HeaderValue::from_static("application/vnd.github.v3+json"),
+    );
+    headers.append(
+        "Authorization",
+        HeaderValue::from_bytes(config.token.as_bytes()).expect("failed to parse header value"),
+    );
 
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
@@ -35,7 +49,7 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
             // to escape simultaneous occurence of mutable and immutable borrowing
             let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
             r.lock().unwrap().res_handling(
-                manipulate_mthed_line(&http_client, &mut mth, config),
+                manipulate_mthed_line(&http_client, &headers, &mut mth, config),
                 image_path.as_path(),
             );
         }
@@ -64,6 +78,7 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
 ///     * `config`: user configuration
 fn manipulate_mthed_line<'a>(
     client: &Client,
+    headers: &HeaderMap,
     mth: &'a mut MatchedLine<'a>,
     config: &Cfg,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -74,6 +89,7 @@ fn manipulate_mthed_line<'a>(
     let encoded_file_contents = encode(image_path.as_path())?;
     let res: Response = request(
         client,
+        headers,
         config,
         image_name.to_str().unwrap(),
         encoded_file_contents,

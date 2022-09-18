@@ -4,7 +4,7 @@ use crate::config::Cfg;
 use anyhow::Result;
 use reqwest::{
     blocking::{Client, Response},
-    header::{HeaderMap, HeaderValue},
+    header::HeaderMap,
 };
 
 /// purpose: send PUT request to the GitHub server
@@ -17,23 +17,11 @@ use reqwest::{
 /// return: None if there is anything wrong with network connection or message initialization
 pub fn request(
     client: &Client,
+    header: &HeaderMap,
     config: &Cfg,
     file_name: &str,
     file_contents: Vec<u8>,
 ) -> Result<Response> {
-    // init the header
-    let mut header: HeaderMap = HeaderMap::new();
-    header.append("User-Agent", HeaderValue::from_static("pup"));
-    header.append(
-        "accept",
-        HeaderValue::from_static("application/vnd.github.v3+json"),
-    );
-
-    header.append(
-        "Authorization",
-        HeaderValue::from_bytes(config.token.as_bytes()).expect("failed to parse header value"),
-    );
-
     // init the json body
     /*
     {
@@ -59,6 +47,10 @@ pub fn request(
         config.name, config.repo, file_name
     );
 
-    let res: Response = client.put(url).headers(header).body(json_body).send()?;
+    let res: Response = client
+        .put(url)
+        .headers(header.clone())
+        .body(json_body)
+        .send()?;
     Ok(res)
 }
