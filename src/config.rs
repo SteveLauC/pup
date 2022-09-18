@@ -8,12 +8,14 @@
 
 use crate::token::fetch_token;
 use colored::Colorize;
-use std::env::var;
-use std::fs::{create_dir, File, OpenOptions};
-use std::io::{Read, Write};
-use std::os::unix::fs::OpenOptionsExt;
-use std::path::PathBuf;
-use std::process::exit;
+use std::{
+    env::var,
+    fs::{create_dir, File, OpenOptions},
+    io::{Read, Write},
+    os::unix::fs::OpenOptionsExt,
+    path::PathBuf,
+    process::exit,
+};
 use toml::Value;
 
 /// configuration file template

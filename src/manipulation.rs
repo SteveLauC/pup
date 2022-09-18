@@ -1,20 +1,19 @@
 //! manipulation.rs: Process the target markdown file, check line by line if there
 //!                 is a markdown image link, send the request and replace the path
 
-use crate::cli::CliCfg;
-use crate::config::Cfg;
-use crate::encode::encode;
-use crate::r#match::MatchedLine;
-use crate::request::request;
-use crate::response::get_url;
-use crate::result::Res;
+use crate::{
+    cli::CliCfg, config::Cfg, encode::encode, r#match::MatchedLine, request::request,
+    response::get_url, result::Res,
+};
 use rayon::prelude::*;
-use reqwest::blocking::Response;
-use std::fs::{File, OpenOptions};
-use std::io::{BufRead, BufReader, Write};
-use std::ops::Index;
-use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use reqwest::blocking::{Client, Response};
+use std::{
+    fs::{File, OpenOptions},
+    io::{BufRead, BufReader, Write},
+    ops::Index,
+    path::{Path, PathBuf},
+    sync::{Arc, Mutex},
+};
 
 /// purpose: call the functions from other modules to complete the task
 /// arguments:
@@ -26,6 +25,9 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
         BufReader::new(File::open(cli_cfg.filename.as_path()).expect("can not open target file"));
     let mut lines: Vec<String> = md_file.lines().map(|item| item.unwrap()).collect();
 
+    // init the client
+    let http_client = Client::new();
+
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
 
@@ -33,7 +35,7 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
             // to escape simultaneous occurence of mutable and immutable borrowing
             let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
             r.lock().unwrap().res_handling(
-                manipulate_mthed_line(&mut mth, config),
+                manipulate_mthed_line(&http_client, &mut mth, config),
                 image_path.as_path(),
             );
         }
@@ -61,6 +63,7 @@ pub fn manipulate(cli_cfg: CliCfg, config: &Cfg, r: Arc<Mutex<Res>>) {
 ///     * `mth`: matched line
 ///     * `config`: user configuration
 fn manipulate_mthed_line<'a>(
+    client: &Client,
     mth: &'a mut MatchedLine<'a>,
     config: &Cfg,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -69,7 +72,12 @@ fn manipulate_mthed_line<'a>(
     let image_name = image_path.file_name().expect("can not get image name");
 
     let encoded_file_contents = encode(image_path.as_path())?;
-    let res: Response = request(config, image_name.to_str().unwrap(), encoded_file_contents)?;
+    let res: Response = request(
+        client,
+        config,
+        image_name.to_str().unwrap(),
+        encoded_file_contents,
+    )?;
     let url: String = get_url(res)?;
     mth.replace(url.as_str());
 

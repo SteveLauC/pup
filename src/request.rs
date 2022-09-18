@@ -2,8 +2,10 @@
 
 use crate::config::Cfg;
 use anyhow::Result;
-use reqwest::blocking::{Client, Response};
-use reqwest::header::{HeaderMap, HeaderValue};
+use reqwest::{
+    blocking::{Client, Response},
+    header::{HeaderMap, HeaderValue},
+};
 
 /// purpose: send PUT request to the GitHub server
 ///
@@ -13,10 +15,12 @@ use reqwest::header::{HeaderMap, HeaderValue};
 ///     * `file_contents`: base64 encoded file contents
 ///
 /// return: None if there is anything wrong with network connection or message initialization
-pub fn request(config: &Cfg, file_name: &str, file_contents: Vec<u8>) -> Result<Response> {
-    // init the client
-    let client: Client = Client::new();
-
+pub fn request(
+    client: &Client,
+    config: &Cfg,
+    file_name: &str,
+    file_contents: Vec<u8>,
+) -> Result<Response> {
     // init the header
     let mut header: HeaderMap = HeaderMap::new();
     header.append("User-Agent", HeaderValue::from_static("pup"));

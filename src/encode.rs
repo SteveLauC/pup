@@ -1,11 +1,13 @@
 //! encode.rs: encode file contents
 
 use base64::{encode_config_slice, STANDARD};
-use std::error::Error;
-use std::fmt::{self, Display, Formatter};
-use std::fs::File;
-use std::io::Read;
-use std::path::Path;
+use std::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+    fs::File,
+    io::Read,
+    path::Path,
+};
 
 /// Error type of encoding process
 #[derive(Debug)]

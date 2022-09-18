@@ -1,10 +1,8 @@
 //! response.rs: HTTP response handling
 
-use reqwest::blocking::Response;
-use reqwest::StatusCode;
+use reqwest::{blocking::Response, StatusCode};
 use serde_json::{from_str, Value};
-use std::error::Error;
-use std::fmt;
+use std::{error::Error, fmt};
 
 /// type to represent failed cases
 #[derive(Debug)]
