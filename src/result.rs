@@ -1,8 +1,7 @@
 //!result.rs: print manipulation results to the user
 
 use colored::Colorize;
-use std::error::Error;
-use std::path::Path;
+use std::{error::Error, path::Path};
 
 #[derive(Default)]
 pub struct Res {

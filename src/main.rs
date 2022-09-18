@@ -13,9 +13,11 @@ use cli::{cli_init, get_cli_config};
 use config::{check_config, create_config, Cfg};
 use manipulation::manipulate;
 use result::Res;
-use std::env::set_current_dir;
-use std::fs::canonicalize;
-use std::sync::{Arc, Mutex};
+use std::{
+    env::set_current_dir,
+    fs::canonicalize,
+    sync::{Arc, Mutex},
+};
 
 fn main() {
     create_config();

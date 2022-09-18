@@ -8,8 +8,7 @@
 
 use crate::token::{delete_token, update_token};
 use clap::{crate_authors, crate_description, crate_version, Arg, ArgMatches, Command};
-use std::path::PathBuf;
-use std::process::exit;
+use std::{path::PathBuf, process::exit};
 
 /// type to represent the command line interface configuration
 pub struct CliCfg {
