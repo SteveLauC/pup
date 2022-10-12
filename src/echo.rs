@@ -1,4 +1,4 @@
-//! echo.rs: offers functionality of disabling and enabling ECHO on tty
+//! offers functionality of disabling and enabling ECHO on tty
 
 use nix::sys::termios::{tcgetattr, tcsetattr, LocalFlags, SetArg, Termios};
 

@@ -1,4 +1,4 @@
-//! encode.rs: encode file contents
+//! encode file contents
 
 use base64::{encode_config_slice, STANDARD};
 use std::{

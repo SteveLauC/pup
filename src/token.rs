@@ -1,4 +1,4 @@
-//! token.rs: offers functionality of fetching, updating and deleting your secret TOKEN
+//! offers functionality of fetching, updating and deleting your secret TOKEN
 
 use crate::echo::{echo_off, echo_on};
 use keyring::{Entry, Result};

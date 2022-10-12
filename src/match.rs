@@ -1,4 +1,4 @@
-//! match.rs: offers `![](/)` match functionality
+//! offers `![](/)` match functionality in markdown manipulation
 
 use regex::{Match, Regex};
 use std::ops::{Index, Range};

@@ -1,4 +1,4 @@
-//! config.rs: Handles everything relevant to configuration file, including:
+//! Handles everything relevant to configuration file, including:
 //!             1. Initialize config file
 //!             2. Check that every field of the configuration file is not empty
 //!             3. Instantiate a valid `Cfg` struct
