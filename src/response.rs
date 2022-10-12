@@ -1,4 +1,4 @@
-//! response.rs: HTTP response handling
+//! HTTP response handling
 
 use reqwest::{blocking::Response, StatusCode};
 use serde_json::{from_str, Value};

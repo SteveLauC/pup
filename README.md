@@ -5,9 +5,10 @@ A command-line tool that automatically uploads images from the markdown document
 the GitHub repo and replaces the paths with the returned URL.
 
 # Table of contents
+
   * [TO DO](https://github.com/SteveLauC/pup#to-do)
   * [Supported platforms](https://github.com/SteveLauC/pup#supported-platforms)
-  * [Demo Video](https://github.com/SteveLauC/pup#demo-video)
+  * [Usage and Demo](https://github.com/SteveLauC/pup#demo-video)
   * [Getting Started](https://github.com/SteveLauC/pup#getting-started)
   * [What pup can NOT do](https://github.com/SteveLauC/pup#what-pup-can-not-do)
   * [Uninstallation](https://github.com/SteveLauC/pup#uninstallation)
@@ -18,17 +19,40 @@ the GitHub repo and replaces the paths with the returned URL.
 - [x] Use system password management to store TOKEN
 - [x] Multithreading file manipulation
 - [x] Relative image path support
+- [ ] More consistent error handling between markdown and image manipulation
+- [ ] Bump `clap` to version 4
 
 # Supported platforms
 
-  * Linux
+Theoretically, all UNIX platforms should be supported. But only tested on Linux 
+with Gnome Desktop.
 
-  * macOS
+# Usage and Demo 
 
-# Demo video
-  ![demo](https://user-images.githubusercontent.com/96880612/163975456-fdebdee0-f68f-4227-8f11-b1c72cb4eaa3.gif)
+```shell
+$ pup --help
+pup 0.1.1
+SteveLauC <stevelauc@outlook.com>
+A command-line tool that automatically uploads images from the markdown document to the GitHub repo
+and replaces the paths with the returned URL
+
+USAGE:
+    pup [OPTIONS] [filename]
+
+ARGS:
+    <filename>    The target markdown or image file
+
+OPTIONS:
+        --delete-token    delete the current TOKEN
+    -h, --help            Print help information
+        --update-token    update the TOKEN
+    -V, --version         Print version information
+```
+
+![demo](https://user-images.githubusercontent.com/96880612/163975456-fdebdee0-f68f-4227-8f11-b1c72cb4eaa3.gif)
 
 # Getting started
+
 1. Go to [token-settings](https://github.com/settings/tokens) to generate a new
    token, make sure it has access to your picture repo.
 
@@ -74,6 +98,7 @@ the GitHub repo and replaces the paths with the returned URL.
    mail = "stevelauc@outlook.com"
    ```
 7. Let's try it again!
+
    ```shell
    $ pup
    No TOKEN available.
@@ -82,13 +107,19 @@ the GitHub repo and replaces the paths with the returned URL.
    Ohhhh, since we haven't entered a token yet, pup asks us to do this.
 
 8. Set the token: enter the token and press enter to confirm.
+
    ```shell
    $ pup --update-token
    Please input the new TOKEN:  
    ```
 8. All configuration is done! Time to enjoy:)
+
    ```shell
    $ pup your-markdown-file.md
+
+   # or 
+
+   $ pup image.jpeg/jpg/png/gif
    ```
    
 # What pup can NOT do

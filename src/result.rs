@@ -1,16 +1,21 @@
-//!result.rs: print manipulation results to the user
+//! manipulation result
 
 use colored::Colorize;
-use std::{error::Error, path::Path};
+use std::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+    path::Path,
+};
 
-#[derive(Default)]
-pub struct Res {
+/// Markdown file manipulation statistical result
+#[derive(Default, Debug)]
+pub struct MdManipulationResult {
     total: usize,
     done: usize,
     failed: usize,
 }
 
-impl Res {
+impl MdManipulationResult {
     /// purpose: handle the result of function `manipulate_mthed_line`
     ///
     /// arguments:
@@ -26,10 +31,12 @@ impl Res {
             self.done += 1;
         }
     }
+}
 
-    /// purpose: print the statictical result to the user
-    pub fn show_results(&self) {
-        println!(
+impl Display for MdManipulationResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        writeln!(
+            f,
             "\npup: {} {}, {} {}(✓), {} {}(✗)",
             self.total,
             "FOUND".bold(),
@@ -37,6 +44,6 @@ impl Res {
             "SUCCESSFUL".bold().green(),
             self.failed,
             "FAILED".bold().red()
-        );
+        )
     }
 }

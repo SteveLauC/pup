@@ -1,23 +1,34 @@
-//! cli.rs: handles everything relevant to command line interface
+//! handles everything relevant to command line interface
 //!     
 //! This command line tool can be used in the following ways;
 //!     1. `pup`: check the configuration file and TOKEN, then exit.
-//!     2. `pup filename`: upload the pics used in filename
-//!     3. `pup --update-token`: set or update the TOKEN
-//!     4. `pup --delete-token`: delete the TOKEN
+//!     2. `pup markdown`: upload the pics used in filename
+//!     3. `pup image`: upload image and store the returned URL to clipboard
+//!     4. `pup --update-token`: set or update the TOKEN
+//!     5. `pup --delete-token`: delete the TOKEN
 
-use crate::token::{delete_token, update_token};
+use crate::{
+    file_type::{file_type, FileType},
+    token::{delete_token, update_token},
+};
 use clap::{crate_authors, crate_description, crate_version, Arg, ArgMatches, Command};
-use std::{path::PathBuf, process::exit};
+use std::{
+    path::{Path, PathBuf},
+    process::exit,
+};
 
 /// type to represent the command line interface configuration
 pub struct CliCfg {
-    pub filename: PathBuf,
+    pub file_path: PathBuf,
+    pub file_type: FileType,
 }
 
 impl CliCfg {
-    fn new(filename: PathBuf) -> Self {
-        CliCfg { filename }
+    fn new(file_name: &Path) -> Self {
+        CliCfg {
+            file_path: file_name.to_owned(),
+            file_type: file_type(file_name),
+        }
     }
 }
 
@@ -31,7 +42,7 @@ pub fn cli_init() -> ArgMatches {
             Arg::new("filename")
                 .takes_value(true)
                 .exclusive(true)
-                .help("The target markdown file"),
+                .help("The target markdown or image file"),
         )
         .arg(
             Arg::new("delete token")
@@ -97,7 +108,7 @@ pub fn get_cli_config(app: ArgMatches) -> Option<CliCfg> {
     token_opt(&app);
 
     if app.is_present("filename") {
-        let file: PathBuf = PathBuf::from(app.value_of("filename").unwrap());
+        let file = Path::new(app.value_of("filename").unwrap());
         if file.exists() {
             Some(CliCfg::new(file))
         } else {
