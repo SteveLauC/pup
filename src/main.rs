@@ -12,6 +12,7 @@ mod response;
 mod result;
 mod token;
 
+use crate::manipulation::img_manipulate;
 use crate::{
     cli::{cli_init, get_cli_config},
     config::{check_config, create_config, Cfg},
@@ -25,7 +26,6 @@ use std::{
     process::exit,
     sync::{Arc, Mutex},
 };
-use crate::manipulation::img_manipulate;
 
 fn main() {
     create_config();
@@ -41,7 +41,8 @@ fn main() {
         set_current_dir(md_file.as_path())
             .expect("Failed to set current dir to the parent of the markdown doc");
 
-        let res: Arc<Mutex<MdManipulationResult>> = Arc::new(Mutex::new(MdManipulationResult::default()));
+        let res: Arc<Mutex<MdManipulationResult>> =
+            Arc::new(Mutex::new(MdManipulationResult::default()));
 
         match cli_cfg.file_type {
             FileType::Unknown => {
