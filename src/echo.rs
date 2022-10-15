@@ -1,10 +1,8 @@
-//! offers functionality of disabling and enabling ECHO on tty
+//! Offers functionality of disabling and enabling ECHO on tty
 
 use nix::sys::termios::{tcgetattr, tcsetattr, LocalFlags, SetArg, Termios};
 
-/// purpose: disable echo on tty configuration
-///
-/// action: unset ECHO bit of termios.c_lflag
+/// Disable echo on tty configuration
 pub fn echo_off() {
     let mut t: Termios = tcgetattr(0).unwrap();
 
@@ -13,9 +11,7 @@ pub fn echo_off() {
     tcsetattr(0, SetArg::TCSANOW, &t).unwrap();
 }
 
-/// purpose: enable echo on tty configuration
-///
-/// action: set ECHO bit of termios.c_lflag
+/// Enable echo on tty configuration
 pub fn echo_on() {
     let mut t: Termios = tcgetattr(0).unwrap();
 

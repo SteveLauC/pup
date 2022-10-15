@@ -12,7 +12,8 @@ pub enum FailedCases {
     CreatedButUrlNotFound,
     NotCoveredCase,
 }
-// implement Display and Debug for our error type
+
+// Implement Display and Debug for our error type
 // so that we can have std::error::Error implmented
 impl fmt::Display for FailedCases {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -21,19 +22,14 @@ impl fmt::Display for FailedCases {
 }
 impl Error for FailedCases {}
 
-/// purpose: parse URL from the returned json body
-///
-/// arguments:
-///     * `body`: HTTP response
-///     
-/// return: If successful, return `html_url` parsed from the response body.
-///         Otherwise return the corressponding error type
+/// Parse URL from the returned json body
 pub fn get_url(body: Response) -> Result<String, FailedCases> {
     match body.status() {
         // returns 201
         StatusCode::CREATED => {
             let body: String = body.text().expect("can not get response body");
-            let val: Value = from_str(&body).expect("can not parse response body");
+            let val: Value =
+                from_str(&body).expect("can not parse response body");
             if let Value::String(ref url) = val["content"]["html_url"] {
                 Ok(url.clone())
             } else {

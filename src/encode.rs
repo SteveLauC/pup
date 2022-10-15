@@ -1,4 +1,4 @@
-//! encode file contents
+//! Encode file contents
 
 use base64::{encode_config_slice, STANDARD};
 use std::{
@@ -15,8 +15,9 @@ pub enum EncodeFailedCases {
     CanNotOpenFile,
     CanNotReadFile,
 }
-// impl Debug + Display for our own error type so that
-// we can have std::error::Error implmented
+
+/// impl Debug + Display for our own error type so that we can have
+/// `std::error::Error` implemented
 impl Display for EncodeFailedCases {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "{:?}", self)
@@ -24,13 +25,7 @@ impl Display for EncodeFailedCases {
 }
 impl Error for EncodeFailedCases {}
 
-/// purpose: to encode the image contents
-///
-/// arguments:
-///     * `path`: image path
-///     
-/// return: If successful, return the encoded bytes.
-///         Otherwise return the corressponding error type.
+/// Encode the image contents
 pub fn encode(path: &Path) -> Result<Vec<u8>, EncodeFailedCases> {
     // buffer for the original file contents
     let mut orig_contents: Vec<u8> = Vec::new();
@@ -39,8 +34,11 @@ pub fn encode(path: &Path) -> Result<Vec<u8>, EncodeFailedCases> {
             // buffer for the encoded contents
             let mut encoded_contents: Vec<u8> = Vec::new();
             encoded_contents.resize(orig_contents.len() * 4 / 3 + 4, 0);
-            let n_bytes: usize =
-                encode_config_slice(orig_contents, STANDARD, &mut encoded_contents);
+            let n_bytes: usize = encode_config_slice(
+                orig_contents,
+                STANDARD,
+                &mut encoded_contents,
+            );
             encoded_contents.truncate(n_bytes); // remove the trailing zeros
 
             Ok(encoded_contents)

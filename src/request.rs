@@ -1,4 +1,4 @@
-//! sends HTTP PUT request
+//! Sends HTTP PUT request
 
 use crate::config::Cfg;
 use anyhow::Result;
@@ -7,6 +7,7 @@ use reqwest::{
     header::{HeaderMap, HeaderValue},
 };
 
+/// Initialize a HTTP client and header
 pub fn client_and_header(config: &Cfg) -> (Client, HeaderMap) {
     // init the client
     let http_client = Client::new();
@@ -19,20 +20,14 @@ pub fn client_and_header(config: &Cfg) -> (Client, HeaderMap) {
     );
     headers.append(
         "Authorization",
-        HeaderValue::from_bytes(config.token.as_bytes()).expect("failed to parse header value"),
+        HeaderValue::from_bytes(config.token.as_bytes())
+            .expect("failed to parse header value"),
     );
 
     (http_client, headers)
 }
 
-/// purpose: send PUT request to the GitHub server
-///
-/// arguments:
-///     * `config`: user configuration
-///     * `file_name`: name of the image file
-///     * `file_contents`: base64 encoded file contents
-///
-/// return: None if there is anything wrong with network connection or message initialization
+/// Send PUT request to the GitHub server
 pub fn request(
     client: &Client,
     header: &HeaderMap,

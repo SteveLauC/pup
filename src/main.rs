@@ -12,11 +12,11 @@ mod response;
 mod result;
 mod token;
 
-use crate::manipulation::img_manipulate;
 use crate::{
     cli::{cli_init, get_cli_config},
     config::{check_config, create_config, Cfg},
     file_type::FileType,
+    manipulation::img_manipulate,
     manipulation::md_manipulate,
     result::MdManipulationResult,
 };
@@ -38,8 +38,9 @@ fn main() {
         let mut md_file = canonicalize(cli_cfg.file_path.as_path())
             .expect("Failed to get absolute path of target markdown file");
         md_file.pop();
-        set_current_dir(md_file.as_path())
-            .expect("Failed to set current dir to the parent of the markdown doc");
+        set_current_dir(md_file.as_path()).expect(
+            "Failed to set current dir to the parent of the markdown doc",
+        );
 
         let res: Arc<Mutex<MdManipulationResult>> =
             Arc::new(Mutex::new(MdManipulationResult::default()));

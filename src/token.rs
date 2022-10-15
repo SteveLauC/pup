@@ -1,4 +1,4 @@
-//! offers functionality of fetching, updating and deleting your secret TOKEN
+//! Offers functionality of fetching, updating and deleting your secret TOKEN
 
 use crate::echo::{echo_off, echo_on};
 use keyring::{Entry, Result};
@@ -7,10 +7,8 @@ use std::{
     process::exit,
 };
 
-/// purpose: fetch token from system passwrod mangaement
-///          if it is not set yet, ask the user to input and then store it
-///          
-/// return: the TOKEN
+/// fetch token from system passwrod mangaement if it is not set yet, ask the
+/// user to input and then store it
 pub fn fetch_token() -> String {
     let pup: Entry = Entry::new("pup", "pup");
 
@@ -22,12 +20,9 @@ pub fn fetch_token() -> String {
     }
 }
 
-/// purpose: update token
+/// Update the TOKEN.
 ///
-/// action: Old TOKEN will be overridden if there was a old token; If there was
-///         no token, set a new one.
-///       
-/// return: `Ok(())` on success, `keyring::error::Error` on error.
+/// Old TOKEN will be overridden if it exists, or a new one will be set.
 pub fn update_token() -> Result<()> {
     let pup: Entry = Entry::new("pup", "pup");
     print!("Please input the new TOKEN: ");
@@ -41,13 +36,7 @@ pub fn update_token() -> Result<()> {
     pup.set_password(new_token.as_str())
 }
 
-/// purpose: delete the existing TOKEN
-///
-/// action: delete the TOKEN if there was one
-///
-/// return: when there is a TOKEN, `Ok(())` on success, `keyring::error::Error`
-///         on error.
-///         Exit the whole program if no TOKEN available
+/// Delete the existing TOKEN, if there is no TOKEN set, return.
 pub fn delete_token() -> Result<()> {
     let pup: Entry = Entry::new("pup", "pup");
     if pup.get_password().is_ok() {

@@ -17,8 +17,9 @@ keywords = ["command-line-tool", "markdown", "pic-uploader", "cli"]
 anyhow = "1.0.56"
 arboard = "3.1.0"
 base64 = "0.13.0"
-clap = {version = "3.1.8", features = ["cargo"]}
+clap = {version = "4.0.15", features = ["cargo", "derive"]}
 colored = "2.0.0"
+dirs = "4.0.0"
 json = "0.12.4"
 keyring = "1.1.2"
 nix = {version = "0.25.0", default-features = false, features = ["term"]}

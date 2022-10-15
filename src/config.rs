@@ -1,15 +1,20 @@
 //! Handles everything relevant to configuration file, including:
-//!             1. Initialize config file
-//!             2. Check that every field of the configuration file is not empty
-//!             3. Instantiate a valid `Cfg` struct
 //!
-//! configuration file location: if you have $XDG_CONFIG_HOME validly set, then
-//! it is located in $XDG_CONFIG_HOME/pup; Otherwise, it is under `$HOME/.config/pup`
+//! 1. Initialize config file
+//! 2. Check that every field of the configuration file is not empty
+//! 3. Instantiate a valid `Cfg` struct
+//!
+//! configuration file location:
+//!
+//! |Platform | Value                                                                 |
+//! | ------- | ----------------------------------------------------------------------|
+//! | Linux   | `$XDG_CONFIG_HOME/pup/config.toml` or `$HOME`/.config/pup/config.toml |
+//! | macOS   | `$HOME`/Library/Application Support/pup/config.toml                   |
 
 use crate::token::fetch_token;
 use colored::Colorize;
+use dirs::config_dir;
 use std::{
-    env::var,
     fs::{create_dir, File, OpenOptions},
     io::{Read, Write},
     os::unix::fs::OpenOptionsExt,
@@ -18,16 +23,13 @@ use std::{
 };
 use toml::Value;
 
-/// configuration file template
+/// Configuration file template
 const TEMPLETE: &str = r#"# configuration file for pup
 [user]
 github-user-name = ""
 github-repo-name = ""
 mail = ""
 "#;
-
-/// constant relative path of config file and folder
-const RELATIVE_CONFIG_FOLDER: &str = "pup";
 
 /// type to represent the user configuration
 #[derive(Debug)]
@@ -38,80 +40,44 @@ pub struct Cfg {
     pub token: String,
 }
 
-/// purpose: return $XDG_CONFIG_HOME
+/// Return config directory path
 ///
-/// action: read $XDG_CONFIG_HOME, if it is set and not empty, return it
-///
-/// return: if $XDG_CONFIG_HOME is set and not empty, return Some($XDG_CONFIG_HOME)
-///         otherwise, return None
-fn xdg_config_home() -> Option<String> {
-    if let Ok(config_home) = var("XDG_CONFIG_HOME") {
-        if config_home.is_empty() {
-            return Some(config_home);
-        } else {
-            return None;
-        }
-    }
-    None
+/// |Platform | Value                                                                 |
+/// | ------- | ----------------------------------------------------------------------|
+/// | Linux   | `$XDG_CONFIG_HOME/pup` or `$HOME`/.config/pup                         |
+/// | macOS   | `$HOME`/Library/Application Support/pup                               |
+fn config_dir_path() -> PathBuf {
+    let mut path = config_dir().unwrap();
+    path.push("pup");
+    path
 }
 
-/// purpose: return home directory
+/// Return config file path
 ///
-/// action: read $HOME, if it is set, return it
-///
-/// return: if $HOME is set and not empty, return $HOME
-///         otherwise, warn user and exit the program
-fn home_path() -> String {
-    if let Ok(home) = var("HOME") {
-        home
-    } else {
-        eprintln!("{} environment variable is unset.", "HOME".bold().red());
-        exit(1);
-    }
-}
-
-/// purpose: return absolute config folder path
-///
-/// action: if $XDG_CONFIG_HONE is set and not empty, return `$XDG_CONFIG_HOME/pup`
-///         otherwise, return `$HOME/.config/pup`
-///
-/// return: `$XDG_CONFIG_HOME/pup` or `$HOME/.config/pup`
-fn config_folder_path() -> PathBuf {
-    if let Some(xdg_config) = xdg_config_home() {
-        PathBuf::from(format!("{}/{}", xdg_config, RELATIVE_CONFIG_FOLDER))
-    } else {
-        PathBuf::from(format!(
-            "{}/.config/{}",
-            home_path(),
-            RELATIVE_CONFIG_FOLDER
-        ))
-    }
-}
-
-/// purpose: return absolute config file path
-///
-/// action: concatenate `config_folder_path()` and `config.toml`, then return
-///
-/// return: `config_folder_path()` + `config.toml`
+/// |Platform | Value                                                                 |
+/// | ------- | ----------------------------------------------------------------------|
+/// | Linux   | `$XDG_CONFIG_HOME/pup/config.toml` or `$HOME`/.config/pup/config.toml |
+/// | macOS   | `$HOME`/Library/Application Support/pup/config.toml                   |
 fn config_file_path() -> PathBuf {
-    let mut config_folder: PathBuf = config_folder_path();
-    config_folder.push("config.toml");
-    config_folder
+    let mut path = config_dir().unwrap();
+    path.push("pup");
+    path.push("config.toml");
+    path
 }
 
-/// purpose: initialize configuration file
+/// Initialize configuration file
 ///
-/// action: if the config already exists, do nothing.
-///        Otherwise, create and write TEMPLATE to it.
+/// if the config already exists, do nothing. Otherwise, create and write
+/// TEMPLATE to it.
 pub fn create_config() {
-    let config_folder_path: PathBuf = config_folder_path();
+    let config_dir_path: PathBuf = config_dir_path();
     let config_file_path: PathBuf = config_file_path();
 
-    if !config_folder_path.exists() {
-        if let Err(msg) = create_dir(config_folder_path.as_path()) {
+    if !config_dir_path.exists() {
+        if let Err(msg) = create_dir(config_dir_path.as_path()) {
             eprintln!(
                 "pup: can not create {:?} due to {}",
-                config_folder_path, msg
+                config_dir_path, msg
             );
             exit(1);
         }
@@ -134,19 +100,18 @@ pub fn create_config() {
                 }
             }
             Err(msg) => {
-                eprintln!("pup: can not create {:?} due to {}", config_file_path, msg);
+                eprintln!(
+                    "pup: can not create {:?} due to {}",
+                    config_file_path, msg
+                );
                 exit(1);
             }
         }
     }
 }
 
-/// purpose: check every fields of the config file to see if any of them is empty.
-///          If so, warn user and exit the program.
-///
-/// action:  read the file contents and parse it.
-///
-/// return:  A initialized `Cfg` struct.
+/// Check every fields of the config file to see if any of them is empty. If so,
+/// warn user and exit the program.
 pub fn check_config() -> Cfg {
     let config_path: PathBuf = config_file_path();
 
@@ -160,12 +125,14 @@ pub fn check_config() -> Cfg {
             // parse the configuration file
             match buf.parse::<Value>() {
                 Ok(config) => {
-                    let name: &str = config["user"]["github-user-name"]
-                        .as_str()
-                        .expect("config.toml: missing user/github-user-name field");
-                    let repo: &str = config["user"]["github-repo-name"]
-                        .as_str()
-                        .expect("config.toml: missing user/github-repo-name field");
+                    let name: &str =
+                        config["user"]["github-user-name"].as_str().expect(
+                            "config.toml: missing user/github-user-name field",
+                        );
+                    let repo: &str =
+                        config["user"]["github-repo-name"].as_str().expect(
+                            "config.toml: missing user/github-repo-name field",
+                        );
                     let mail: &str = config["user"]["mail"]
                         .as_str()
                         .expect("config.toml: missing user/mail field");
@@ -204,57 +171,6 @@ pub fn check_config() -> Cfg {
         Err(msg) => {
             eprintln!("pup: can not read {:?} due to {}", config_path, msg);
             exit(1);
-        }
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn template_parse_test() {
-        let tem: &str = r#"# configuration file for pup
-[user]
-github-user-name = "SteveLauC"
-github-repo-name = "pic"
-mail = "stevelauc@outlook.com"
-"#;
-        let val: Value = tem.parse::<Value>().unwrap();
-        assert_eq!(
-            val["user"]["github-user-name"].as_str().unwrap(),
-            "SteveLauC"
-        );
-        assert_eq!(val["user"]["github-repo-name"].as_str().unwrap(), "pic");
-        assert_eq!(
-            val["user"]["mail"].as_str().unwrap(),
-            "stevelauc@outlook.com"
-        );
-    }
-
-    #[test]
-    fn config_folder_file_relation_path() {
-        let config_folder_path: PathBuf = config_folder_path();
-        let mut config_file_path: PathBuf = config_file_path();
-        config_file_path.pop();
-
-        assert_eq!(config_folder_path, config_file_path);
-    }
-
-    #[test]
-    fn config_folder_test() {
-        if let Ok(xdg_config) = var("XDG_CONFIG_HOME") {
-            if !xdg_config.is_empty() {
-                assert_eq!(
-                    PathBuf::from(format!("{}/pup", xdg_config)),
-                    config_folder_path()
-                );
-            } else {
-                assert_eq!(
-                    PathBuf::from(format!("{}/.config/pup", home_path())),
-                    config_folder_path()
-                );
-            }
         }
     }
 }
