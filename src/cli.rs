@@ -1,4 +1,4 @@
-//! handles everything relevant to command line interface
+//! Handles everything relevant to command line interface
 //!     
 //! This command line tool can be used in the following ways;
 //!     1. `pup`: check the configuration file and TOKEN, then exit.
@@ -11,13 +11,16 @@ use crate::{
     file_type::{file_type, FileType},
     token::{delete_token, update_token},
 };
-use clap::{crate_authors, crate_description, crate_version, Arg, ArgMatches, Command};
+use clap::{
+    crate_authors, crate_description, crate_version, Arg, ArgAction,
+    ArgMatches, Command,
+};
 use std::{
     path::{Path, PathBuf},
     process::exit,
 };
 
-/// type to represent the command line interface configuration
+/// Type to represent the command line interface configuration
 pub struct CliCfg {
     pub file_path: PathBuf,
     pub file_type: FileType,
@@ -32,7 +35,7 @@ impl CliCfg {
     }
 }
 
-/// purpose: initialize the command line application
+/// Initialize the command line application
 pub fn cli_init() -> ArgMatches {
     Command::new("pup")
         .author(crate_authors!(" "))
@@ -40,13 +43,13 @@ pub fn cli_init() -> ArgMatches {
         .about(crate_description!())
         .arg(
             Arg::new("filename")
-                .takes_value(true)
+                .action(ArgAction::Set)
                 .exclusive(true)
                 .help("The target markdown or image file"),
         )
         .arg(
             Arg::new("delete token")
-                .takes_value(false)
+                .action(ArgAction::SetTrue)
                 .required(false)
                 .exclusive(true)
                 .help("delete the current TOKEN")
@@ -55,7 +58,7 @@ pub fn cli_init() -> ArgMatches {
         .arg(
             Arg::new("update token")
                 .required(false)
-                .takes_value(false)
+                .action(ArgAction::SetTrue)
                 .exclusive(true)
                 .help("update the TOKEN")
                 .long("update-token"),
@@ -63,12 +66,12 @@ pub fn cli_init() -> ArgMatches {
         .get_matches()
 }
 
-/// purpose: handle two TOKEN-relevant special cli options
+/// handle two TOKEN-relevant special cli options
 ///
-/// action: call `update_token()` or `delete_token()` if the corresponding
-///         option is present, then exit the program
+/// call `update_token()` or `delete_token()` if the corresponding option is
+/// present, then exit the program
 pub fn token_opt(app: &ArgMatches) {
-    if app.is_present("update token") {
+    if app.contains_id("update token") {
         if update_token().is_err() {
             eprintln!("Failed to update the TOKEN");
             exit(1);
@@ -77,7 +80,7 @@ pub fn token_opt(app: &ArgMatches) {
         }
     }
 
-    if app.is_present("delete token") {
+    if app.contains_id("delete token") {
         if delete_token().is_err() {
             eprintln!("Failed to delete the TOKEN");
             exit(1);
@@ -87,28 +90,29 @@ pub fn token_opt(app: &ArgMatches) {
     }
 }
 
-/// purpose: initialize a cli config struct if pup is executed like `pup target-file`
+/// Initialize a cli config struct if pup is executed like `pup target-file`
 ///
-/// action:
-///     `$ pup --delete-token` or `$ pup --update-token`:
-///         call `delete_token()` or `update_token()` if the corresponding option
-///         is given, then exit the program.
-///      `$ pup filename`:
-///         if filename exists, return Some(CliCfg), otherwise warn the user and exit the program
-///      `pup`:
-///         return None
-/// arguments:
-///     * `app`: return value of `cli_init`
+/// #### Action
 ///
-/// return: optional CliCfg
+/// * `$ pup --delete-token` or `$ pup --update-token`:
 ///
-/// note: we need to make sure `filename` exists
+///   call `delete_token()` or `update_token()` if the corresponding option
+///   is given, then exit the program.
+/// * `$ pup filename`:
+///
+///   if filename exists, return Some(CliCfg), otherwise warn the user
+///   and exit the program
+/// * `pup`:
+///
+///   return None
+///
+/// NOTE: we need to make sure `filename` exists
 pub fn get_cli_config(app: ArgMatches) -> Option<CliCfg> {
     // Handle two token-related opt
     token_opt(&app);
 
-    if app.is_present("filename") {
-        let file = Path::new(app.value_of("filename").unwrap());
+    if app.contains_id("filename") {
+        let file = Path::new(app.get_one::<&str>("filename").unwrap());
         if file.exists() {
             Some(CliCfg::new(file))
         } else {

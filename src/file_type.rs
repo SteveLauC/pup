@@ -10,7 +10,7 @@ pub enum FileType {
     Unknown,
 }
 
-/// construct a [`FileType`] according to the given `path`
+/// Construct a [`FileType`] according to the given `path`
 pub fn file_type<P: AsRef<Path>>(path: P) -> FileType {
     match path.as_ref().extension() {
         Some(os_str_type) => {

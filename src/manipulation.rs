@@ -10,7 +10,13 @@ use crate::{
     response::get_url,
     result::MdManipulationResult,
 };
-
+use arboard::Clipboard;
+use colored::Colorize;
+use rayon::prelude::*;
+use reqwest::{
+    blocking::{Client, Response},
+    header::HeaderMap,
+};
 use std::{
     fs::{File, OpenOptions},
     io::{BufRead, BufReader, Write},
@@ -19,23 +25,19 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use arboard::Clipboard;
-use colored::Colorize;
-use rayon::prelude::*;
-use reqwest::{
-    blocking::{Client, Response},
-    header::HeaderMap,
-};
-
-/// purpose: call the functions from other modules to complete the task
-/// arguments:
-///     * `cli_cfg`: command-line interface configuration
-///     * `config`: user configuration
-pub fn md_manipulate(cli_cfg: &CliCfg, config: &Cfg, r: Arc<Mutex<MdManipulationResult>>) {
+/// Call the functions from other modules to complete the task
+pub fn md_manipulate(
+    cli_cfg: &CliCfg,
+    config: &Cfg,
+    r: Arc<Mutex<MdManipulationResult>>,
+) {
     // buffer-wrapped target file
-    let md_file: BufReader<File> =
-        BufReader::new(File::open(cli_cfg.file_path.as_path()).expect("can not open target file"));
-    let mut lines: Vec<String> = md_file.lines().map(|item| item.unwrap()).collect();
+    let md_file: BufReader<File> = BufReader::new(
+        File::open(cli_cfg.file_path.as_path())
+            .expect("can not open target file"),
+    );
+    let mut lines: Vec<String> =
+        md_file.lines().map(|item| item.unwrap()).collect();
 
     let (client, headers) = client_and_header(config);
 
@@ -44,7 +46,8 @@ pub fn md_manipulate(cli_cfg: &CliCfg, config: &Cfg, r: Arc<Mutex<MdManipulation
 
         if let Some(mut mth) = MatchedLine::new(line) {
             // to escape simultaneous occurence of mutable and immutable borrowing
-            let image_path = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
+            let image_path =
+                Path::new(mth.line.index(mth.range.clone())).to_path_buf();
             r.lock().unwrap().res_handling(
                 manipulate_mthed_line(&client, &headers, &mut mth, config),
                 image_path.as_path(),
@@ -68,18 +71,15 @@ pub fn md_manipulate(cli_cfg: &CliCfg, config: &Cfg, r: Arc<Mutex<MdManipulation
     println!("{}", r.lock().unwrap());
 }
 
-/// purpose: deal with every matched line
-///
-/// arguments:
-///     * `mth`: matched line
-///     * `config`: user configuration
+/// Deal with every matched line
 fn manipulate_mthed_line<'a>(
     client: &Client,
     headers: &HeaderMap,
     mth: &'a mut MatchedLine<'a>,
     config: &Cfg,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let image_path: PathBuf = Path::new(mth.line.index(mth.range.clone())).to_path_buf();
+    let image_path: PathBuf =
+        Path::new(mth.line.index(mth.range.clone())).to_path_buf();
 
     let image_name = image_path.file_name().expect("can not get image name");
 
@@ -97,7 +97,7 @@ fn manipulate_mthed_line<'a>(
     Ok(())
 }
 
-/// manipulate single image file
+/// Manipulate single image file
 pub fn img_manipulate(cli_cfg: &CliCfg, config: &Cfg) {
     let (client, headers) = client_and_header(config);
     let encoded_file_contents = encode(cli_cfg.file_path.as_path())
@@ -110,8 +110,10 @@ pub fn img_manipulate(cli_cfg: &CliCfg, config: &Cfg) {
         encoded_file_contents,
     )
     .expect("failed to send PUT request");
-    let url = get_url(res).expect("failed to extract URL from the response message");
-    let mut clipboard = Clipboard::new().expect("failed to initialize a clipborad instance");
+    let url =
+        get_url(res).expect("failed to extract URL from the response message");
+    let mut clipboard =
+        Clipboard::new().expect("failed to initialize a clipborad instance");
     clipboard
         .set_text(url.as_str())
         .expect("can not store the returned URL to clipboard");

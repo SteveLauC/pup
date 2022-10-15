@@ -1,4 +1,4 @@
-//! manipulation result
+//! Manipulation result handling
 
 use colored::Colorize;
 use std::{
@@ -16,12 +16,12 @@ pub struct MdManipulationResult {
 }
 
 impl MdManipulationResult {
-    /// purpose: handle the result of function `manipulate_mthed_line`
-    ///
-    /// arguments:
-    ///     * `res`: return value of `manipulate_mthed_line`
-    ///     * `image`: image path
-    pub fn res_handling(&mut self, res: Result<(), Box<dyn Error>>, image_path: &Path) {
+    /// Check out the result of our image manipulation and report it to the user.
+    pub fn res_handling(
+        &mut self,
+        res: Result<(), Box<dyn Error>>,
+        image_path: &Path,
+    ) {
         self.total += 1;
         if let Err(msg) = res {
             println!("find: {:?}\n[{}]: {:?}", image_path, "FAILED".red(), msg);
@@ -33,6 +33,8 @@ impl MdManipulationResult {
     }
 }
 
+/// Make [MdManipulationResult] printable so that we can display the statistics
+/// when task finishes.
 impl Display for MdManipulationResult {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         writeln!(
