@@ -19,8 +19,7 @@ the GitHub repo and replaces the paths with the returned URL.
 - [x] Use system password management to store TOKEN
 - [x] Multithreading file manipulation
 - [x] Relative image path support
-- [ ] More consistent error handling between markdown and image manipulation
-- [ ] Bump `clap` to version 4
+- [ ] Async I/O
 
 # Supported platforms
 
