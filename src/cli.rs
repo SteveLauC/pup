@@ -71,7 +71,7 @@ pub fn cli_init() -> ArgMatches {
 /// call `update_token()` or `delete_token()` if the corresponding option is
 /// present, then exit the program
 pub fn token_opt(app: &ArgMatches) {
-    if app.contains_id("update token") {
+    if app.get_flag("update token") {
         if update_token().is_err() {
             eprintln!("Failed to update the TOKEN");
             exit(1);
@@ -80,7 +80,7 @@ pub fn token_opt(app: &ArgMatches) {
         }
     }
 
-    if app.contains_id("delete token") {
+    if app.get_flag("delete token") {
         if delete_token().is_err() {
             eprintln!("Failed to delete the TOKEN");
             exit(1);

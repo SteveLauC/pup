@@ -58,7 +58,7 @@ OPTIONS:
 2. get the `pup` binary
 
    ```shell
-   $ cargo install --git https://github.com/SteveLauC/pup
+   $ cargo +nightly install --git https://github.com/SteveLauC/pup
    ```
 
 3. Double check you have pup installed

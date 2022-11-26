@@ -40,7 +40,7 @@ impl Display for MdManipulationResult {
             "\npup: {} {}, {} {}(✓), {} {}(✗)",
             self.total,
             "FOUND".bold(),
-            self.total - self.faild,
+            self.total - self.failed,
             "SUCCESSFUL".bold().green(),
             self.failed,
             "FAILED".bold().red()
