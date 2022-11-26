@@ -1,4 +1,4 @@
-//! Manipulation result handling
+//! Markdown documentation manipulation result handling
 
 use colored::Colorize;
 use std::{
@@ -11,7 +11,6 @@ use std::{
 #[derive(Default, Debug)]
 pub struct MdManipulationResult {
     total: usize,
-    done: usize,
     failed: usize,
 }
 
@@ -28,7 +27,6 @@ impl MdManipulationResult {
             self.failed += 1;
         } else {
             println!("find: {:?}\n[{}]", image_path, "DONE".green());
-            self.done += 1;
         }
     }
 }
@@ -42,7 +40,7 @@ impl Display for MdManipulationResult {
             "\npup: {} {}, {} {}(✓), {} {}(✗)",
             self.total,
             "FOUND".bold(),
-            self.done,
+            self.total - self.failed,
             "SUCCESSFUL".bold().green(),
             self.failed,
             "FAILED".bold().red()
