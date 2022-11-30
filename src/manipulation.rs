@@ -106,7 +106,7 @@ pub fn img_manipulate(cli_cfg: &CliCfg, config: &Cfg) {
         &client,
         &headers,
         config,
-        cli_cfg.file_path.to_str().unwrap(),
+        cli_cfg.file_path.file_name().unwrap().to_str().unwrap(),
         encoded_file_contents,
     )
     .expect("failed to send PUT request");
