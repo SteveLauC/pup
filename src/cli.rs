@@ -22,15 +22,17 @@ use std::{
 
 /// Type to represent the command line interface configuration
 pub struct CliCfg {
+    /// File path, the value of `[filename]` option
     pub file_path: PathBuf,
+    /// File Type: Markdown or Image
     pub file_type: FileType,
 }
 
 impl CliCfg {
-    fn new(file_name: &Path) -> Self {
+    fn new(file_path: &Path) -> Self {
         CliCfg {
-            file_path: file_name.to_owned(),
-            file_type: file_type(file_name),
+            file_path: file_path.to_owned(),
+            file_type: file_type(file_path),
         }
     }
 }
@@ -42,7 +44,7 @@ pub fn cli_init() -> ArgMatches {
         .version(crate_version!())
         .about(crate_description!())
         .arg(
-            Arg::new("filename")
+            Arg::new("filepath")
                 .action(ArgAction::Set)
                 .exclusive(true)
                 .help("The target markdown or image file"),
@@ -100,23 +102,23 @@ pub fn token_opt(app: &ArgMatches) {
 ///   is given, then exit the program.
 /// * `$ pup filename`:
 ///
-///   if filename exists, return Some(CliCfg), otherwise warn the user
+///   if filepath exists, return Some(CliCfg), otherwise warn the user
 ///   and exit the program
 /// * `pup`:
 ///
 ///   return None
 ///
-/// NOTE: we need to make sure `filename` exists
+/// NOTE: we need to make sure `filepath` exists
 pub fn get_cli_config(app: ArgMatches) -> Option<CliCfg> {
     // Handle two token-related opt
     token_opt(&app);
 
-    if app.contains_id("filename") {
-        let file = Path::new(app.get_one::<&str>("filename").unwrap());
-        if file.exists() {
-            Some(CliCfg::new(file))
+    if let Some(path) = app.get_one::<String>("filepath") {
+        let path = Path::new(path);
+        if path.exists() {
+            Some(CliCfg::new(path))
         } else {
-            eprintln!("pup: {:?} does not exist", file);
+            eprintln!("pup: {:?} does not exist", path);
             exit(1);
         }
     } else {
