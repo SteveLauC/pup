@@ -36,10 +36,10 @@ A command-line tool that automatically uploads images from the markdown document
 and replaces the paths with the returned URL
 
 USAGE:
-    pup [OPTIONS] [filename]
+    pup [OPTIONS] [filepath]
 
 ARGS:
-    <filename>    The target markdown or image file
+    <filepath>    The target markdown or image file
 
 OPTIONS:
         --delete-token    delete the current TOKEN
