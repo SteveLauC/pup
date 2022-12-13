@@ -7,7 +7,7 @@ use reqwest::{
     header::{HeaderMap, HeaderValue},
 };
 
-/// Initialize a HTTP client and header
+/// Initialize HTTP client and header
 pub fn client_and_header(config: &Cfg) -> (Client, HeaderMap) {
     // init the client
     let http_client = Client::new();
@@ -46,21 +46,21 @@ pub fn request(
         "content": "file-contents"
     }
     */
-    let mut json_body: Vec<u8>= format!(
+    let mut json_body= format!(
         "{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"", 
         config.name,
         config.mail
-    ).as_bytes().to_vec();
+    ).into_bytes();
     json_body.extend_from_slice(&file_contents);
     json_body.extend_from_slice("\"}".as_bytes());
 
     // target URL
-    let url: String = format!(
+    let url = format!(
         "https://api.github.com/repos/{}/{}/contents/{}",
         config.name, config.repo, file_name
     );
 
-    let res: Response = client
+    let res = client
         .put(url)
         .headers(header.clone())
         .body(json_body)
