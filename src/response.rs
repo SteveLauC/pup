@@ -2,25 +2,20 @@
 
 use reqwest::{blocking::Response, StatusCode};
 use serde_json::{from_str, Value};
-use std::{error::Error, fmt};
+use thiserror::Error;
 
 /// type to represent failed cases
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum FailedCases {
+    #[error("409: Conflict")]
     Conflict,
+    #[error("422: ValidationFailed")]
     ValidationFailed,
+    #[error("The picture is uploaded but no URL is returned.")]
     CreatedButUrlNotFound,
+    #[error("This error is not covered by pup")]
     NotCoveredCase,
 }
-
-// Implement Display and Debug for our error type
-// so that we can have std::error::Error implmented
-impl fmt::Display for FailedCases {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
-impl Error for FailedCases {}
 
 /// Parse URL from the returned json body
 pub fn get_url(body: Response) -> Result<String, FailedCases> {

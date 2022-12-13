@@ -1,34 +1,39 @@
 //! Offers `![](/)` match functionality in markdown manipulation
 
-use regex::{Match, Regex};
+use regex::Regex;
 use std::ops::{Index, Range};
 
 /// type to represent a matched line
 pub struct MatchedLine<'lifetime_of_line> {
+    /// Line.
     pub line: &'lifetime_of_line mut String,
-    pub range: Range<usize>, // the position of the path on a line
+    /// The position of the path on a line.
+    ///
+    /// For example:
+    /// "This is a pic ![pic](pic.jpeg)!"
+    /// then `range` will be `Range {start: 21, end: 28 }`.
+    pub range: Range<usize>,
 }
 
 impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
     /// Check and initialize a matched line struct
+    ///
+    /// Return `Ok(MatchedLine<'_>)` if `line` contains a picture entry.
     pub fn new(line: &'lifetime_of_line mut String) -> Option<Self> {
         // used to match the markdown image path
-        let image_path_re: Regex = Regex::new(r#"!\[.*\]\(.*\)"#).unwrap();
+        let image_path_re = Regex::new(r#"!\[.*\]\(.*\)"#).unwrap();
 
         if image_path_re.is_match(line) {
-            let image_path_match: Match = image_path_re.find(line).unwrap();
+            let image_path_match = image_path_re.find(line).unwrap();
 
             // used to match the parenthesis
-            let parenthesis_re: Regex = Regex::new(r#"\(.*\)"#).unwrap();
-            let image_path: &str = line.index(image_path_match.range());
-            let parenthesis_mth: Match =
-                parenthesis_re.find(image_path).unwrap();
+            let parenthesis_re = Regex::new(r#"\(.*\)"#).unwrap();
+            let image_path = line.index(image_path_match.range());
+            let parenthesis_mth = parenthesis_re.find(image_path).unwrap();
 
             // calculate the range`[start, end)` of path in this line
-            let start: usize =
-                parenthesis_mth.start() + image_path_match.start() + 1; // inclusive
-            let end: usize =
-                parenthesis_mth.end() + image_path_match.start() - 1; // exclusive
+            let start = parenthesis_mth.start() + image_path_match.start() + 1; // inclusive
+            let end = parenthesis_mth.end() + image_path_match.start() - 1; // exclusive
 
             if line[start..end].starts_with("https://")
                 || line[start..end].is_empty()
