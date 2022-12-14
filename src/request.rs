@@ -1,69 +1,84 @@
 //! Sends HTTP PUT request
 
-use crate::config::Cfg;
+use crate::{config::UserConfig, encode::encode};
 use anyhow::Result;
 use reqwest::{
     blocking::{Client, Response},
     header::{HeaderMap, HeaderValue},
 };
+use std::path::Path;
 
-/// Initialize HTTP client and header
-pub fn client_and_header(config: &Cfg) -> (Client, HeaderMap) {
-    // init the client
-    let http_client = Client::new();
-    // init the header
-    let mut headers: HeaderMap = HeaderMap::new();
-    headers.append("User-Agent", HeaderValue::from_static("pup"));
-    headers.append(
-        "accept",
-        HeaderValue::from_static("application/vnd.github.v3+json"),
-    );
-    headers.append(
-        "Authorization",
-        HeaderValue::from_bytes(config.token.as_bytes())
-            .expect("failed to parse header value"),
-    );
-
-    (http_client, headers)
+/// Picture uploader.
+#[derive(Debug)]
+pub struct Uploader {
+    client: Client,
+    header: HeaderMap,
 }
 
-/// Send PUT request to the GitHub server
-pub fn request(
-    client: &Client,
-    header: &HeaderMap,
-    config: &Cfg,
-    file_name: &str,
-    file_contents: Vec<u8>,
-) -> Result<Response> {
-    // init the json body
-    /*
-    {
-        "message": "upload",
-        "commiter": {
-            "name": "commiter-name",
-            "email": "commiter-email"
-        },
-        "content": "file-contents"
+impl Uploader {
+    /// Initialize an [`Uploader`].
+    pub fn init(token: &str) -> Self {
+        let mut headers = HeaderMap::new();
+        headers.append("User-Agent", HeaderValue::from_static("pup"));
+        headers.append(
+            "accept",
+            HeaderValue::from_static("application/vnd.github.v3+json"),
+        );
+        // The GitHub API requires that the token header value should be
+        // "token TOKEN"
+        let token_with_prefix = format!("token {}", token);
+        headers.append(
+            "Authorization",
+            HeaderValue::from_str(token_with_prefix.as_str())
+                .expect("failed to parse header value"),
+        );
+
+        Self {
+            client: Client::new(),
+            header: headers,
+        }
     }
-    */
-    let mut json_body= format!(
-        "{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"", 
-        config.name,
-        config.mail
-    ).into_bytes();
-    json_body.extend_from_slice(&file_contents);
-    json_body.extend_from_slice("\"}".as_bytes());
 
-    // target URL
-    let url = format!(
-        "https://api.github.com/repos/{}/{}/contents/{}",
-        config.name, config.repo, file_name
-    );
+    /// Upload file specified in `path` to the Repo.
+    pub fn upload<P: AsRef<Path>>(
+        &self,
+        path: P,
+        user_cfg: &UserConfig,
+    ) -> Result<Response> {
+        let encoded_file_contents = encode(path.as_ref())?;
+        let file_name = path.as_ref().file_name().unwrap().to_str().unwrap();
 
-    let res = client
-        .put(url)
-        .headers(header.clone())
-        .body(json_body)
-        .send()?;
-    Ok(res)
+        // init the json body
+        /*
+        {
+            "message": "upload",
+            "commiter": {
+                "name": "commiter-name",
+                "email": "commiter-email"
+            },
+            "content": "file-contents"
+        }
+        */
+        let mut json_body= format!(
+            "{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"",
+            user_cfg.name,
+            user_cfg.mail
+        ).into_bytes();
+        json_body.extend_from_slice(&encoded_file_contents);
+        json_body.extend_from_slice("\"}".as_bytes());
+
+        // target URL
+        let url = format!(
+            "https://api.github.com/repos/{}/{}/contents/{}",
+            user_cfg.name, user_cfg.repo, file_name
+        );
+
+        let res = self
+            .client
+            .put(url)
+            .headers(self.header.clone())
+            .body(json_body)
+            .send()?;
+        Ok(res)
+    }
 }

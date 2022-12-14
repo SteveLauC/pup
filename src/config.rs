@@ -1,10 +1,10 @@
-//! Handles everything relevant to configuration file, including:
+//! Handles everything relevant to the User Configuration, including:
 //!
-//! 1. Initialize config file
+//! 1. Initialize a config file
 //! 2. Check that every field of the configuration file is not empty
-//! 3. Instantiate a valid `Cfg` struct
+//! 3. Instantiate a valid `UserConfig` struct
 //!
-//! configuration file location:
+//! Configuration file location:
 //!
 //! |Platform | Value                                                                 |
 //! | ------- | ----------------------------------------------------------------------|
@@ -23,7 +23,7 @@ use std::{
 };
 use toml::Value;
 
-/// Configuration file template
+/// User configuration file template
 const TEMPLETE: &str = r#"# configuration file for pup
 [user]
 github-user-name = ""
@@ -33,7 +33,7 @@ mail = ""
 
 /// type to represent the user configuration
 #[derive(Debug)]
-pub struct Cfg {
+pub struct UserConfig {
     pub name: String,
     pub repo: String,
     pub mail: String,
@@ -67,11 +67,11 @@ fn config_file_path() -> PathBuf {
 
 /// Initialize configuration file
 ///
-/// if the config already exists, do nothing. Otherwise, create and write
+/// If the config already exists, do nothing. Otherwise, create and write
 /// TEMPLATE to it.
-pub fn create_config() {
-    let config_dir_path: PathBuf = config_dir_path();
-    let config_file_path: PathBuf = config_file_path();
+pub fn init_config() {
+    let config_dir_path = config_dir_path();
+    let config_file_path = config_file_path();
 
     if !config_dir_path.exists() {
         if let Err(msg) = create_dir(config_dir_path.as_path()) {
@@ -110,10 +110,12 @@ pub fn create_config() {
     }
 }
 
-/// Check every fields of the config file to see if any of them is empty. If so,
-/// warn user and exit the program.
-pub fn check_config() -> Cfg {
-    let config_path: PathBuf = config_file_path();
+/// Try to construct an `UserConfig`.
+///
+/// This function will check every fields of the config file to see if any of
+/// them is empty. If so, warn user and exit the program.
+pub fn get_user_config() -> UserConfig {
+    let config_path = config_file_path();
 
     match File::open(config_path.as_path()) {
         Ok(mut file) => {
@@ -125,20 +127,20 @@ pub fn check_config() -> Cfg {
             // parse the configuration file
             match buf.parse::<Value>() {
                 Ok(config) => {
-                    let name: &str =
+                    let name =
                         config["user"]["github-user-name"].as_str().expect(
                             "config.toml: missing user/github-user-name field",
                         );
-                    let repo: &str =
+                    let repo =
                         config["user"]["github-repo-name"].as_str().expect(
                             "config.toml: missing user/github-repo-name field",
                         );
-                    let mail: &str = config["user"]["mail"]
+                    let mail = config["user"]["mail"]
                         .as_str()
                         .expect("config.toml: missing user/mail field");
 
                     // sign used to record whether there are empty fields
-                    let mut field_empty_sign: bool = false;
+                    let mut field_empty_sign = false;
 
                     if name.is_empty() {
                         eprintln!("{} is unset.", "name".red());
@@ -155,11 +157,11 @@ pub fn check_config() -> Cfg {
                     if field_empty_sign {
                         exit(1);
                     }
-                    Cfg {
+                    UserConfig {
                         name: name.into(),
                         repo: repo.into(),
                         mail: mail.into(),
-                        token: format!("token {}", fetch_token()),
+                        token: fetch_token(),
                     }
                 }
                 Err(msg) => {

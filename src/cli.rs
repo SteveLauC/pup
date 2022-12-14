@@ -20,17 +20,17 @@ use std::{
     process::exit,
 };
 
-/// Type to represent the command line interface configuration
-pub struct CliCfg {
+/// Type to represent the file to be operated.
+pub struct TargetFile {
     /// File path, the value of `[filename]` option
     pub file_path: PathBuf,
     /// File Type: Markdown or Image
     pub file_type: FileType,
 }
 
-impl CliCfg {
+impl TargetFile {
     fn new(file_path: &Path) -> Self {
-        CliCfg {
+        TargetFile {
             file_path: file_path.to_owned(),
             file_type: file_type(file_path),
         }
@@ -109,14 +109,14 @@ pub fn token_opt(app: &ArgMatches) {
 ///   return None
 ///
 /// NOTE: we need to make sure `filepath` exists
-pub fn get_cli_config(app: ArgMatches) -> Option<CliCfg> {
+pub fn get_target_file(app: &ArgMatches) -> Option<TargetFile> {
     // Handle two token-related opt
-    token_opt(&app);
+    token_opt(app);
 
     if let Some(path) = app.get_one::<String>("filepath") {
         let path = Path::new(path);
         if path.exists() {
-            Some(CliCfg::new(path))
+            Some(TargetFile::new(path))
         } else {
             eprintln!("pup: {:?} does not exist", path);
             exit(1);
