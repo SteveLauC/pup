@@ -1,5 +1,5 @@
 # Pup 
-[![BUILD](https://github.com/stevelauc/pup/workflows/Rust/badge.svg)](https://github.com/stevelauc/pup/actions/workflows/build.yml)
+[![BUILD](https://github.com/stevelauc/pup/workflows/Rust/badge.svg)](https://github.com/stevelauc/pup/actions/workflows/ci.yml)
 
 A command-line tool that automatically uploads images from the markdown document to
 the GitHub repo and replaces the paths with the returned URL.
