@@ -36,7 +36,7 @@ pub fn md_manipulate(
         .lines()
         .map(|item| item.unwrap())
         .collect::<Vec<String>>();
-    let uploader = Uploader::init(config.token.as_str());
+    let uploader = Uploader::init(config.token.as_ref().unwrap());
 
     lines.par_iter_mut().for_each(|line| {
         line.push('\n');
@@ -99,7 +99,7 @@ fn clipboard_set(contents: &str) {
 
 /// Manipulate single image file
 pub fn img_manipulate(target_file: &TargetFile, config: &UserConfig) {
-    let uploader = Uploader::init(config.token.as_str());
+    let uploader = Uploader::init(config.token.as_ref().unwrap());
     let response = uploader
         .upload(target_file.file_path.as_path(), config)
         .expect("Failed to upload");

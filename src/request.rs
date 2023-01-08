@@ -61,7 +61,7 @@ impl Uploader {
         */
         let mut json_body= format!(
             "{{\"message\": \"upload\", \"commiter\": {{\"name\": \"{}\", \"email\":\"{}\"}}, \"content\": \"",
-            user_cfg.name,
+            user_cfg.github_user_name,
             user_cfg.mail
         ).into_bytes();
         json_body.extend_from_slice(&encoded_file_contents);
@@ -70,7 +70,7 @@ impl Uploader {
         // target URL
         let url = format!(
             "https://api.github.com/repos/{}/{}/contents/{}",
-            user_cfg.name, user_cfg.repo, file_name
+            user_cfg.github_user_name, user_cfg.github_repo_name, file_name
         );
 
         let res = self
