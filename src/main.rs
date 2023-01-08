@@ -22,7 +22,7 @@ mod token;
 
 use crate::{
     cli::{cli_init, get_target_file},
-    config::{UserConfig, init_config},
+    config::{init_config, UserConfig},
     file_type::FileType,
     manipulation::img_manipulate,
     manipulation::md_manipulate,

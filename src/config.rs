@@ -47,25 +47,25 @@ pub struct UserConfig {
 
 impl UserConfig {
     /// Try to construct an `UserConfig`.
-   pub fn load() -> Self {
-       let config_path = config_file_path();
-       let config_file_contents = read_to_string(config_path.as_path())
-           .expect("pup: can not read config file");
+    pub fn load() -> Self {
+        let config_path = config_file_path();
+        let config_file_contents = read_to_string(config_path.as_path())
+            .expect("pup: can not read config file");
 
-       match toml::from_str::<UserConfig>(&config_file_contents) {
-           Ok(mut config) => {
-               config.token = Some(fetch_token());
-               config
-           }
-           Err(msg) => {
-               eprintln!(
-                   "pup: can not parse the configuration file due to: `{}`",
-                   msg
-               );
-               exit(1);
-           }
-       }
-   }
+        match toml::from_str::<UserConfig>(&config_file_contents) {
+            Ok(mut config) => {
+                config.token = Some(fetch_token());
+                config
+            }
+            Err(msg) => {
+                eprintln!(
+                    "pup: can not parse the configuration file due to: `{}`",
+                    msg
+                );
+                exit(1);
+            }
+        }
+    }
 }
 
 /// Return config directory path
