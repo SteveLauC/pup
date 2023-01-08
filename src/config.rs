@@ -12,32 +12,60 @@
 //! | macOS   | `$HOME`/Library/Application Support/pup/config.toml                   |
 
 use crate::token::fetch_token;
-use colored::Colorize;
 use dirs::config_dir;
+use serde::Deserialize;
+use std::fs::read_to_string;
 use std::{
-    fs::{create_dir, File, OpenOptions},
-    io::{Read, Write},
+    fs::{create_dir, OpenOptions},
+    io::Write,
     os::unix::fs::OpenOptionsExt,
     path::PathBuf,
     process::exit,
 };
-use toml::Value;
 
 /// User configuration file template
-const TEMPLETE: &str = r#"# configuration file for pup
-[user]
-github-user-name = ""
-github-repo-name = ""
-mail = ""
+const TEMPLETE: &str = r#"# Configuration file for pup
+github_user_name = "your_user_name"
+github_repo_name = "your_repo_name"
+mail = "your_mail_address"
 "#;
 
 /// type to represent the user configuration
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub struct UserConfig {
-    pub name: String,
-    pub repo: String,
+    pub github_user_name: String,
+    pub github_repo_name: String,
     pub mail: String,
-    pub token: String,
+    // This field is `Option`al since it will NOT be present in the
+    // configuration file, to make `serde` successfully parse it without any
+    // error, will make it `Option`al here.
+    //
+    // But an initialized `UserConfig` will NEVER have this field set to `None`,
+    // feel free to call `.unwrap()` on it.
+    pub token: Option<String>,
+}
+
+impl UserConfig {
+    /// Try to construct an `UserConfig`.
+    pub fn load() -> Self {
+        let config_path = config_file_path();
+        let config_file_contents = read_to_string(config_path.as_path())
+            .expect("pup: can not read config file");
+
+        match toml::from_str::<UserConfig>(&config_file_contents) {
+            Ok(mut config) => {
+                config.token = Some(fetch_token());
+                config
+            }
+            Err(msg) => {
+                eprintln!(
+                    "pup: can not parse the configuration file due to: `{}`",
+                    msg
+                );
+                exit(1);
+            }
+        }
+    }
 }
 
 /// Return config directory path
@@ -106,73 +134,6 @@ pub fn init_config() {
                 );
                 exit(1);
             }
-        }
-    }
-}
-
-/// Try to construct an `UserConfig`.
-///
-/// This function will check every fields of the config file to see if any of
-/// them is empty. If so, warn user and exit the program.
-pub fn get_user_config() -> UserConfig {
-    let config_path = config_file_path();
-
-    match File::open(config_path.as_path()) {
-        Ok(mut file) => {
-            // buf to store the config file contents
-            let mut buf: String = String::with_capacity(200);
-            file.read_to_string(&mut buf)
-                .expect("pup: can not read config file contents");
-
-            // parse the configuration file
-            match buf.parse::<Value>() {
-                Ok(config) => {
-                    let name =
-                        config["user"]["github-user-name"].as_str().expect(
-                            "config.toml: missing user/github-user-name field",
-                        );
-                    let repo =
-                        config["user"]["github-repo-name"].as_str().expect(
-                            "config.toml: missing user/github-repo-name field",
-                        );
-                    let mail = config["user"]["mail"]
-                        .as_str()
-                        .expect("config.toml: missing user/mail field");
-
-                    // sign used to record whether there are empty fields
-                    let mut field_empty_sign = false;
-
-                    if name.is_empty() {
-                        eprintln!("{} is unset.", "name".red());
-                        field_empty_sign = true;
-                    }
-                    if repo.is_empty() {
-                        eprintln!("{} is unset.", "repo".red());
-                        field_empty_sign = true;
-                    }
-                    if mail.is_empty() {
-                        eprintln!("{} is unset.", "mail".red());
-                        field_empty_sign = true;
-                    }
-                    if field_empty_sign {
-                        exit(1);
-                    }
-                    UserConfig {
-                        name: name.into(),
-                        repo: repo.into(),
-                        mail: mail.into(),
-                        token: fetch_token(),
-                    }
-                }
-                Err(msg) => {
-                    eprintln!("pup: invalid config file due to {}", msg);
-                    exit(1);
-                }
-            }
-        }
-        Err(msg) => {
-            eprintln!("pup: can not read {:?} due to {}", config_path, msg);
-            exit(1);
         }
     }
 }

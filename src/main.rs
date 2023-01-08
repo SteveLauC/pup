@@ -22,7 +22,7 @@ mod token;
 
 use crate::{
     cli::{cli_init, get_target_file},
-    config::{get_user_config, init_config},
+    config::{init_config, UserConfig},
     file_type::FileType,
     manipulation::img_manipulate,
     manipulation::md_manipulate,
@@ -51,7 +51,7 @@ fn adjust_pwd(target_markdown_file_path: &Path) {
 
 fn main() {
     init_config();
-    let user_config = get_user_config();
+    let user_config = UserConfig::load();
 
     // if filename option is given
     if let Some(target_file) = get_target_file(&cli_init()) {
