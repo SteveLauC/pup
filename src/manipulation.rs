@@ -60,7 +60,7 @@ pub fn md_manipulate(
         .expect("can not open target markdown file for writing purpose");
 
     lines.iter().for_each(|line| {
-        md_file
+        let _ = md_file
             .write(line.as_bytes())
             .expect("can not write to the target markdown file");
     });
