@@ -58,7 +58,7 @@ OPTIONS:
 2. get the `pup` binary
 
    ```shell
-   $ cargo +nightly install --git https://github.com/SteveLauC/pup
+   $ cargo install --git https://github.com/SteveLauC/pup
    ```
 
 3. Double check you have pup installed
@@ -90,10 +90,8 @@ OPTIONS:
    Make it something like the following one, remeber to replace each field with your own one.
 
    ```
-   # configuration file for pup
-   [user]
-   github-user-name = "SteveLauC"
-   github-repo-name = "test-repo"
+   github_user_name = "SteveLauC"
+   github_repo_name = "test-repo"
    mail = "stevelauc@outlook.com"
    ```
 7. Let's try it again!
