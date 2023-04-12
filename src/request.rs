@@ -40,11 +40,7 @@ impl Uploader {
     }
 
     /// Upload file specified in `path` to the Repo.
-    pub fn upload<P: AsRef<Path>>(
-        &self,
-        path: P,
-        user_cfg: &UserConfig,
-    ) -> Result<Response> {
+    pub fn upload<P: AsRef<Path>>(&self, path: P, user_cfg: &UserConfig) -> Result<Response> {
         let encoded_file_contents = encode(path.as_ref())?;
         let file_name = path.as_ref().file_name().unwrap().to_str().unwrap();
 

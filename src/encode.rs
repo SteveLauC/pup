@@ -10,11 +10,7 @@ pub fn encode(path: &Path) -> Result<Vec<u8>> {
     // buffer for the encoded contents
     let mut encoded_contents = Vec::new();
     encoded_contents.resize(orig_contents.len() * 4 / 3 + 4, 0);
-    let n_bytes = encode_engine_slice(
-        orig_contents,
-        &mut encoded_contents,
-        &DEFAULT_ENGINE,
-    );
+    let n_bytes = encode_engine_slice(orig_contents, &mut encoded_contents, &DEFAULT_ENGINE);
     // remove the trailing zeros
     encoded_contents.truncate(n_bytes);
 

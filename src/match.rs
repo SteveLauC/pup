@@ -35,9 +35,7 @@ impl<'lifetime_of_line> MatchedLine<'lifetime_of_line> {
             let start = parenthesis_mth.start() + image_path_match.start() + 1; // inclusive
             let end = parenthesis_mth.end() + image_path_match.start() - 1; // exclusive
 
-            if line[start..end].starts_with("https://")
-                || line[start..end].is_empty()
-            {
+            if line[start..end].starts_with("https://") || line[start..end].is_empty() {
                 None
             } else {
                 Some(Self {
@@ -61,8 +59,7 @@ mod test {
     use super::*;
     #[test]
     fn replace_test() {
-        let mut local_path: String =
-            String::from("> ![title](/home/steve/doc.png)xx");
+        let mut local_path: String = String::from("> ![title](/home/steve/doc.png)xx");
         let mut mth: MatchedLine = MatchedLine::new(&mut local_path).unwrap();
         let target_url = "https://github.com/SteveLauC/pic/blob/main/Screen%20Shot%202022-04-06%20at%2010.30.49%20AM.png";
         mth.replace(target_url);
@@ -71,8 +68,7 @@ mod test {
 
     #[test]
     fn matched_line_init_test() {
-        let mut line: String =
-            String::from("> ![title](/home/steve/doc.png)xx");
+        let mut line: String = String::from("> ![title](/home/steve/doc.png)xx");
         let mth: MatchedLine = MatchedLine::new(&mut line).unwrap();
 
         assert_eq!(mth.range, Range { start: 11, end: 30 });
@@ -90,8 +86,7 @@ mod test {
         let mut line3: String = "![aaa[()".into();
         assert!(MatchedLine::new(&mut line3).is_none());
         // url
-        let mut line4: String =
-            "> 我们不是![ppt](https://.....)xxxx这样".into();
+        let mut line4: String = "> 我们不是![ppt](https://.....)xxxx这样".into();
         assert!(MatchedLine::new(&mut line4).is_none());
         // relative path
         let mut line5: String = "![issustration](pic.png)".into();
