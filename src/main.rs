@@ -24,8 +24,7 @@ use crate::{
     cli::{cli_init, get_target_file},
     config::{init_config, UserConfig},
     file_type::FileType,
-    manipulation::img_manipulate,
-    manipulation::md_manipulate,
+    manipulation::{img_manipulate, md_manipulate},
     result::MdManipulationResult,
 };
 use std::{
@@ -51,18 +50,19 @@ fn adjust_pwd(target_markdown_file_path: &Path) {
 
 fn main() {
     init_config();
+    let app = cli_init();
+    let target_file_opt = get_target_file(&app);
     let user_config = UserConfig::load();
 
     // if filename option is given
-    if let Some(target_file) = get_target_file(&cli_init()) {
+    if let Some(target_file) = target_file_opt {
         match target_file.file_type {
             FileType::Unknown => {
                 eprintln!("Unknown file type, abort.");
                 exit(1);
             }
             FileType::Markdown => {
-                let result =
-                    Arc::new(Mutex::new(MdManipulationResult::default()));
+                let result = Arc::new(Mutex::new(MdManipulationResult::default()));
                 adjust_pwd(target_file.file_path.as_path());
                 md_manipulate(&target_file, &user_config, result);
             }

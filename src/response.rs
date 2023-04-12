@@ -23,8 +23,7 @@ pub fn get_url(body: Response) -> Result<String, FailedCases> {
         // returns 201
         StatusCode::CREATED => {
             let body: String = body.text().expect("can not get response body");
-            let val: Value =
-                from_str(&body).expect("can not parse response body");
+            let val: Value = from_str(&body).expect("can not parse response body");
             if let Value::String(ref url) = val["content"]["html_url"] {
                 Ok(url.clone())
             } else {

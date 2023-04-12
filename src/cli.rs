@@ -11,10 +11,7 @@ use crate::{
     file_type::{file_type, FileType},
     token::{delete_token, update_token},
 };
-use clap::{
-    crate_authors, crate_description, crate_version, Arg, ArgAction,
-    ArgMatches, Command,
-};
+use clap::{crate_authors, crate_description, crate_version, Arg, ArgAction, ArgMatches, Command};
 use std::{
     path::{Path, PathBuf},
     process::exit,
@@ -109,6 +106,10 @@ pub fn token_opt(app: &ArgMatches) {
 ///   return None
 ///
 /// NOTE: we need to make sure `filepath` exists
+//
+// TODO: `get_target_file` is a bad API , it handles all the
+// CLI arguments instead of just extracting the target file, and thus should
+// be refactored.
 pub fn get_target_file(app: &ArgMatches) -> Option<TargetFile> {
     // Handle two token-related opt
     token_opt(app);

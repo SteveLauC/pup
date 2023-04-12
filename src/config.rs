@@ -14,9 +14,8 @@
 use crate::token::fetch_token;
 use dirs::config_dir;
 use serde::Deserialize;
-use std::fs::read_to_string;
 use std::{
-    fs::{create_dir, OpenOptions},
+    fs::{create_dir, read_to_string, OpenOptions},
     io::Write,
     os::unix::fs::OpenOptionsExt,
     path::PathBuf,
@@ -49,8 +48,8 @@ impl UserConfig {
     /// Try to construct an `UserConfig`.
     pub fn load() -> Self {
         let config_path = config_file_path();
-        let config_file_contents = read_to_string(config_path.as_path())
-            .expect("pup: can not read config file");
+        let config_file_contents =
+            read_to_string(config_path.as_path()).expect("pup: can not read config file");
 
         match toml::from_str::<UserConfig>(&config_file_contents) {
             Ok(mut config) => {
@@ -103,10 +102,7 @@ pub fn init_config() {
 
     if !config_dir_path.exists() {
         if let Err(msg) = create_dir(config_dir_path.as_path()) {
-            eprintln!(
-                "pup: can not create {:?} due to {}",
-                config_dir_path, msg
-            );
+            eprintln!("pup: can not create {:?} due to {}", config_dir_path, msg);
             exit(1);
         }
     }
@@ -128,10 +124,7 @@ pub fn init_config() {
                 }
             }
             Err(msg) => {
-                eprintln!(
-                    "pup: can not create {:?} due to {}",
-                    config_file_path, msg
-                );
+                eprintln!("pup: can not create {:?} due to {}", config_file_path, msg);
                 exit(1);
             }
         }
