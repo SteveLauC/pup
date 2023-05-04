@@ -11,7 +11,7 @@ use std::{
 ///
 /// if it is not set yet, ask the user to input then store it.
 pub fn fetch_token() -> String {
-    let pup = Entry::new("pup", "pup");
+    let pup = Entry::new("pup", "pup").expect("pup should already be registered");
 
     if let Ok(token) = pup.get_password() {
         token
@@ -25,7 +25,7 @@ pub fn fetch_token() -> String {
 ///
 /// Old TOKEN will be overridden if it exists, or a new one will be set.
 pub fn update_token() -> Result<()> {
-    let pup = Entry::new("pup", "pup");
+    let pup = Entry::new("pup", "pup").expect("pup should already be registered");
     print!("Please input the new TOKEN: ");
     stdout().flush().unwrap();
     echo_off(); // disable echo
@@ -41,7 +41,7 @@ pub fn update_token() -> Result<()> {
 
 /// Delete the existing TOKEN, if there is no TOKEN set, return.
 pub fn delete_token() -> Result<()> {
-    let pup = Entry::new("pup", "pup");
+    let pup = Entry::new("pup", "pup").expect("pup should already be registered");
     if pup.get_password().is_ok() {
         pup.delete_password()
     } else {
