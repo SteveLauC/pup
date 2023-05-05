@@ -1,20 +1,26 @@
 ///! Operations supported by `pup`.
 ///
 /// See `Operation` for more details.
+pub mod manipulation;
+pub mod token;
+
 use crate::{
-    cli::{CliApp, TargetFile},
     config::UserConfig,
-    file_type::FileType,
-    manipulation::{img_manipulate, md_manipulate},
-    result::MdManipulationResult,
-    token::{delete_token, set_token, update_token},
-    util::adjust_pwd,
+    util::{
+        adjust_pwd::adjust_pwd,
+        file_type::{file_type, FileType},
+        result::MdManipulationResult,
+    },
+    CliApp,
 };
 use anyhow::{anyhow, Result};
+use manipulation::{img_manipulate, md_manipulate};
 use std::{
+    path::{Path, PathBuf},
     process::exit,
     sync::{Arc, Mutex},
 };
+use token::{delete_token, set_token, update_token};
 
 /// Operation supported by `pup`.
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -129,5 +135,23 @@ impl Operation {
         }
 
         Ok(())
+    }
+}
+
+/// Type to represent the file to be operated.
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct TargetFile {
+    /// File path, the value of `[filename]` option
+    pub file_path: PathBuf,
+    /// File Type: Markdown or Image
+    pub file_type: FileType,
+}
+
+impl TargetFile {
+    pub fn new(file_path: &Path) -> Self {
+        TargetFile {
+            file_path: file_path.to_owned(),
+            file_type: file_type(file_path),
+        }
     }
 }

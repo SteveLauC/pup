@@ -7,8 +7,11 @@
 //! system clipboard.
 
 use crate::{
-    cli::TargetFile, config::UserConfig, r#match::MatchedLine, request::Uploader,
-    response::get_url, result::MdManipulationResult,
+    config::UserConfig,
+    operation::TargetFile,
+    util::{
+        r#match::MatchedLine, request::Uploader, response::get_url, result::MdManipulationResult,
+    },
 };
 use arboard::Clipboard;
 use colored::Colorize;

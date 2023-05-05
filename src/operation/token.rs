@@ -1,6 +1,6 @@
 //! Offers functionality of fetching, updating and deleting your secret TOKEN
 
-use crate::echo::{echo_off, echo_on};
+use crate::util::echo::{echo_off, echo_on};
 use anyhow::{anyhow, Result};
 use keyring::{error::Error, Entry};
 use std::{
@@ -17,7 +17,7 @@ pub fn fetch_token() -> String {
     let pup = Entry::new("pup", "pup").expect("expected it to be registered successfully");
 
     if matches!(pup.get_password(), Err(Error::NoEntry)) {
-        eprintln!("No TOKEN available.\nUse `pup --update-token` to set it.");
+        eprintln!("No TOKEN available.\nUse `pup --set-token` to set it.");
         exit(1);
     } else {
         pup.get_password()

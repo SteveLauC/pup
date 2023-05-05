@@ -11,7 +11,7 @@
 //! | Linux   | `$XDG_CONFIG_HOME/pup/config.toml` or `$HOME`/.config/pup/config.toml |
 //! | macOS   | `$HOME`/Library/Application Support/pup/config.toml                   |
 
-use crate::token::fetch_token;
+use crate::operation::token::fetch_token;
 use dirs::config_dir;
 use serde::Deserialize;
 use std::{

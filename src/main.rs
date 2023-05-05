@@ -8,23 +8,32 @@
 #![deny(missing_copy_implementations)]
 #![deny(missing_docs)]
 
-mod cli;
 mod config;
-mod echo;
-mod encode;
-mod file_type;
-mod manipulation;
-mod r#match;
 mod operation;
-mod request;
-mod response;
-mod result;
-mod token;
 mod util;
 
-use crate::{cli::CliApp, config::init_config, operation::Operation};
+use crate::{config::init_config, operation::Operation};
 use anyhow::Result;
 use clap::Parser;
+use std::path::PathBuf;
+
+/// Command line interface.
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+pub struct CliApp {
+    /// The target markdown or image file.
+    #[arg(exclusive = true)]
+    pub filepath: Option<PathBuf>,
+    /// Set the token.
+    #[arg(long, exclusive = true)]
+    pub set_token: bool,
+    /// Update the token.
+    #[arg(long, exclusive = true)]
+    pub update_token: bool,
+    /// Delete the token.
+    #[arg(long, exclusive = true)]
+    pub delete_token: bool,
+}
 
 fn main() -> Result<()> {
     init_config();

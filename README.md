@@ -30,22 +30,20 @@ with Gnome Desktop.
 
 ```shell
 $ pup --help
-pup 0.1.1
-SteveLauC <stevelauc@outlook.com>
-A command-line tool that automatically uploads images from the markdown document to the GitHub repo
-and replaces the paths with the returned URL
+A command-line tool that automatically uploads images from the markdown document to the GitHub repo and replaces the paths with the returned URL
 
-USAGE:
-    pup [OPTIONS] [filepath]
 
-ARGS:
-    <filepath>    The target markdown or image file
+Usage: pup [OPTIONS] [FILEPATH]
 
-OPTIONS:
-        --delete-token    delete the current TOKEN
-    -h, --help            Print help information
-        --update-token    update the TOKEN
-    -V, --version         Print version information
+Arguments:
+  [FILEPATH]  The target markdown or image file
+
+Options:
+      --set-token     Set the token
+      --update-token  Update the token
+      --delete-token  Delete the token
+  -h, --help          Print help
+  -V, --version       Print version
 ```
 
 ![demo](https://user-images.githubusercontent.com/96880612/163975456-fdebdee0-f68f-4227-8f11-b1c72cb4eaa3.gif)
@@ -99,14 +97,14 @@ OPTIONS:
    ```shell
    $ pup
    No TOKEN available.
-   Use `pup --update-token` to set it
+   Use `pup --set-token` to set it
    ```
    Ohhhh, since we haven't entered a token yet, pup asks us to do this.
 
 8. Set the token: enter the token and press enter to confirm.
 
    ```shell
-   $ pup --update-token
+   $ pup --set-token
    Please input the new TOKEN:  
    ```
 8. All configuration is done! Time to enjoy:)
