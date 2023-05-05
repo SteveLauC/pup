@@ -15,58 +15,22 @@ mod encode;
 mod file_type;
 mod manipulation;
 mod r#match;
+mod operation;
 mod request;
 mod response;
 mod result;
 mod token;
+mod util;
 
-use crate::{
-    cli::{cli_init, get_target_file},
-    config::{init_config, UserConfig},
-    file_type::FileType,
-    manipulation::{img_manipulate, md_manipulate},
-    result::MdManipulationResult,
-};
-use std::{
-    env::set_current_dir,
-    fs::canonicalize,
-    path::Path,
-    process::exit,
-    sync::{Arc, Mutex},
-};
+use crate::{cli::CliApp, config::init_config, operation::Operation};
+use anyhow::Result;
+use clap::Parser;
 
-// Change current working directory to the parent directory of the markdown doc
-// so we can handle relative path.
-#[inline]
-fn adjust_pwd(target_markdown_file_path: &Path) {
-    let md_absolute_path = canonicalize(target_markdown_file_path)
-        .expect("Failed to get absolute path of target markdown file");
-    let md_file_parent_dir = md_absolute_path
-        .parent()
-        .expect("The target Markdown doc should have a parent directory");
-    set_current_dir(md_file_parent_dir)
-        .expect("Failed to set current dir to the parent of the markdown doc");
-}
-
-fn main() {
+fn main() -> Result<()> {
     init_config();
-    let app = cli_init();
-    let target_file_opt = get_target_file(&app);
-    let user_config = UserConfig::load();
+    let app = CliApp::parse();
+    let op = Operation::try_from(&app)?;
+    op.execute()?;
 
-    // if filename option is given
-    if let Some(target_file) = target_file_opt {
-        match target_file.file_type {
-            FileType::Unknown => {
-                eprintln!("Unknown file type, abort.");
-                exit(1);
-            }
-            FileType::Markdown => {
-                let result = Arc::new(Mutex::new(MdManipulationResult::default()));
-                adjust_pwd(target_file.file_path.as_path());
-                md_manipulate(&target_file, &user_config, result);
-            }
-            FileType::Image => img_manipulate(&target_file, &user_config),
-        };
-    }
+    Ok(())
 }
