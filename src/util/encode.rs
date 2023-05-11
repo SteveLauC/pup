@@ -1,8 +1,7 @@
 //! Encode file contents
 
 use anyhow::Result;
-use base64::engine::general_purpose::STANDARD;
-use base64::Engine;
+use base64::{engine::general_purpose::STANDARD, Engine};
 use std::{fs::read, path::Path};
 
 /// Encode the image contents

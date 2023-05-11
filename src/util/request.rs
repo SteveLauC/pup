@@ -1,6 +1,6 @@
 //! Sends HTTP PUT request
 
-use crate::{config::UserConfig, encode::encode};
+use crate::{config::UserConfig, util::encode::encode};
 use anyhow::Result;
 use reqwest::{
     blocking::{Client, Response},

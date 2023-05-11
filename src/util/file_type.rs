@@ -3,7 +3,7 @@
 use std::path::Path;
 
 /// File types that are supported by `pup`
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum FileType {
     Markdown,
     Image,

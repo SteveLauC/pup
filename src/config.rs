@@ -11,7 +11,7 @@
 //! | Linux   | `$XDG_CONFIG_HOME/pup/config.toml` or `$HOME`/.config/pup/config.toml |
 //! | macOS   | `$HOME`/Library/Application Support/pup/config.toml                   |
 
-use crate::token::fetch_token;
+use crate::operation::token::fetch_token;
 use dirs::config_dir;
 use serde::Deserialize;
 use std::{
@@ -29,7 +29,11 @@ github_repo_name = "your_repo_name"
 mail = "your_mail_address"
 "#;
 
-/// type to represent the user configuration
+/// User configuration
+///
+/// Including:
+/// * Config file
+/// * TOKEN
 #[derive(Debug, Deserialize)]
 pub struct UserConfig {
     pub github_user_name: String,
@@ -95,7 +99,7 @@ fn config_file_path() -> PathBuf {
 /// Initialize configuration file
 ///
 /// If the config already exists, do nothing. Otherwise, create and write
-/// TEMPLATE to it.
+/// `TEMPLATE` to it.
 pub fn init_config() {
     let config_dir_path = config_dir_path();
     let config_file_path = config_file_path();

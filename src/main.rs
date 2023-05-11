@@ -8,65 +8,38 @@
 #![deny(missing_copy_implementations)]
 #![deny(missing_docs)]
 
-mod cli;
 mod config;
-mod echo;
-mod encode;
-mod file_type;
-mod manipulation;
-mod r#match;
-mod request;
-mod response;
-mod result;
-mod token;
+mod operation;
+mod util;
 
-use crate::{
-    cli::{cli_init, get_target_file},
-    config::{init_config, UserConfig},
-    file_type::FileType,
-    manipulation::{img_manipulate, md_manipulate},
-    result::MdManipulationResult,
-};
-use std::{
-    env::set_current_dir,
-    fs::canonicalize,
-    path::Path,
-    process::exit,
-    sync::{Arc, Mutex},
-};
+use crate::{config::init_config, operation::Operation};
+use anyhow::Result;
+use clap::Parser;
+use std::path::PathBuf;
 
-// Change current working directory to the parent directory of the markdown doc
-// so we can handle relative path.
-#[inline]
-fn adjust_pwd(target_markdown_file_path: &Path) {
-    let md_absolute_path = canonicalize(target_markdown_file_path)
-        .expect("Failed to get absolute path of target markdown file");
-    let md_file_parent_dir = md_absolute_path
-        .parent()
-        .expect("The target Markdown doc should have a parent directory");
-    set_current_dir(md_file_parent_dir)
-        .expect("Failed to set current dir to the parent of the markdown doc");
+/// Command line interface.
+#[derive(Parser, Debug)]
+#[clap(author, version, about, long_about = None)]
+pub struct CliApp {
+    /// The target markdown or image file.
+    #[arg(exclusive = true)]
+    pub filepath: Option<PathBuf>,
+    /// Set the token.
+    #[arg(long, exclusive = true)]
+    pub set_token: bool,
+    /// Update the token.
+    #[arg(long, exclusive = true)]
+    pub update_token: bool,
+    /// Delete the token.
+    #[arg(long, exclusive = true)]
+    pub delete_token: bool,
 }
 
-fn main() {
+fn main() -> Result<()> {
     init_config();
-    let app = cli_init();
-    let target_file_opt = get_target_file(&app);
-    let user_config = UserConfig::load();
+    let app = CliApp::parse();
+    let op = Operation::try_from(&app)?;
+    op.execute()?;
 
-    // if filename option is given
-    if let Some(target_file) = target_file_opt {
-        match target_file.file_type {
-            FileType::Unknown => {
-                eprintln!("Unknown file type, abort.");
-                exit(1);
-            }
-            FileType::Markdown => {
-                let result = Arc::new(Mutex::new(MdManipulationResult::default()));
-                adjust_pwd(target_file.file_path.as_path());
-                md_manipulate(&target_file, &user_config, result);
-            }
-            FileType::Image => img_manipulate(&target_file, &user_config),
-        };
-    }
+    Ok(())
 }
