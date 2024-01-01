@@ -35,6 +35,9 @@ pub fn get_url(body: Response) -> Result<String, FailedCases> {
         // returns 422
         StatusCode::UNPROCESSABLE_ENTITY => Err(FailedCases::ValidationFailed),
         // other cases of failure which are not covered right now
-        _ => Err(FailedCases::NotCoveredCase),
+        _ => {
+            eprintln!("Response: {:#?}", body);
+            Err(FailedCases::NotCoveredCase)
+        }
     }
 }
