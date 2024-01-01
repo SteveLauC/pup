@@ -73,7 +73,6 @@ pub fn md_manipulate(
 /// Deal with every matched line.
 ///
 /// This is the helper function used inside of [`md_manipulate`].
-#[inline]
 fn manipulate_mthed_line<'a>(
     uploader: &Uploader,
     mth: &'a mut MatchedLine<'a>,
@@ -89,7 +88,6 @@ fn manipulate_mthed_line<'a>(
 /// Places `contents` into the clipboard.
 ///
 /// A helper function used in [`img_manipulate`].
-#[inline]
 fn clipboard_set(contents: &str) {
     let mut clipboard = Clipboard::new().expect("failed to initialize a clipboard instance");
     clipboard
