@@ -78,7 +78,7 @@ pub fn update_token() -> Result<()> {
 /// Delete the existing TOKEN, if there is no TOKEN set, return.
 pub fn delete_token() -> Result<()> {
     let pup = Entry::new("pup", "pup")?;
-    pup.delete_password()?;
+    pup.delete_credential()?;
 
     Ok(())
 }
