@@ -18,7 +18,7 @@ anyhow = "1.0.86"
 arboard = "3.4.0"
 base64 = "0.22.0"
 clap = { version = "4.5.16", features = ["cargo", "derive"] }
-colored = "2.1.0"
+colored = "3.0.0"
 dirs = "5.0.1"
 keyring = "3.2.0"
 rayon = "1.10.0"
